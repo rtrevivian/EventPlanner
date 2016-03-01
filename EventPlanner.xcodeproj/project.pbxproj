@@ -20,7 +20,6 @@
 		799ED1351C7E635E00B9B64D /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799ED1341C7E635E00B9B64D /* BaseViewController.swift */; };
 		799F688B1C7F4F3700B81DC1 /* CoreDataStackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799F688A1C7F4F3700B81DC1 /* CoreDataStackManager.swift */; };
 		799F688D1C7F4FDA00B81DC1 /* EventPlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799F688C1C7F4FDA00B81DC1 /* EventPlanner.swift */; };
-		79B9C0AF1C7F9F3B000B61C8 /* KinveyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9C0AE1C7F9F3B000B61C8 /* KinveyKit.framework */; };
 		79B9C0B11C7F9F59000B61C8 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9C0B01C7F9F59000B61C8 /* Accounts.framework */; };
 		79B9C0B31C7F9F60000B61C8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9C0B21C7F9F60000B61C8 /* CoreGraphics.framework */; };
 		79B9C0B51C7F9F66000B61C8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9C0B41C7F9F66000B61C8 /* CoreLocation.framework */; };
@@ -53,6 +52,7 @@
 		79F33DD01C7CB1C300D5A09D /* IconTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F33DCF1C7CB1C300D5A09D /* IconTableViewCell.swift */; };
 		79FC66A91C7A5D700046BFFF /* TextTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79FC66A81C7A5D700046BFFF /* TextTableViewCell.swift */; };
 		79FC66AB1C7B5E010046BFFF /* DateTimeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79FC66AA1C7B5E010046BFFF /* DateTimeTableViewCell.swift */; };
+		79FDAB701C85574B0035B242 /* KinveyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79FDAB6F1C85574B0035B242 /* KinveyKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,7 +79,6 @@
 		799ED1341C7E635E00B9B64D /* BaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BaseViewController.swift; path = Controller/BaseViewController.swift; sourceTree = "<group>"; };
 		799F688A1C7F4F3700B81DC1 /* CoreDataStackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataStackManager.swift; path = Model/CoreDataStackManager.swift; sourceTree = "<group>"; };
 		799F688C1C7F4FDA00B81DC1 /* EventPlanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EventPlanner.swift; path = Model/EventPlanner.swift; sourceTree = "<group>"; };
-		79B9C0AE1C7F9F3B000B61C8 /* KinveyKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KinveyKit.framework; path = Frameworks/KinveyKit.framework; sourceTree = "<group>"; };
 		79B9C0B01C7F9F59000B61C8 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		79B9C0B21C7F9F60000B61C8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		79B9C0B41C7F9F66000B61C8 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -117,6 +116,7 @@
 		79F33DCF1C7CB1C300D5A09D /* IconTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IconTableViewCell.swift; path = View/IconTableViewCell.swift; sourceTree = "<group>"; };
 		79FC66A81C7A5D700046BFFF /* TextTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TextTableViewCell.swift; path = View/TextTableViewCell.swift; sourceTree = "<group>"; };
 		79FC66AA1C7B5E010046BFFF /* DateTimeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DateTimeTableViewCell.swift; path = View/DateTimeTableViewCell.swift; sourceTree = "<group>"; };
+		79FDAB6F1C85574B0035B242 /* KinveyKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = KinveyKit.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,9 +131,9 @@
 				79B9C0B91C7F9F75000B61C8 /* MobileCoreServices.framework in Frameworks */,
 				79B9C0B71C7F9F6F000B61C8 /* libsqlite3.tbd in Frameworks */,
 				79B9C0B51C7F9F66000B61C8 /* CoreLocation.framework in Frameworks */,
+				79FDAB701C85574B0035B242 /* KinveyKit.framework in Frameworks */,
 				79B9C0B31C7F9F60000B61C8 /* CoreGraphics.framework in Frameworks */,
 				79B9C0B11C7F9F59000B61C8 /* Accounts.framework in Frameworks */,
-				79B9C0AF1C7F9F3B000B61C8 /* KinveyKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -170,6 +170,7 @@
 		79B9C0AD1C7F9F1C000B61C8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				79FDAB6F1C85574B0035B242 /* KinveyKit.framework */,
 				79B9C0B01C7F9F59000B61C8 /* Accounts.framework */,
 				79B9C0B21C7F9F60000B61C8 /* CoreGraphics.framework */,
 				79B9C0B41C7F9F66000B61C8 /* CoreLocation.framework */,
@@ -179,7 +180,6 @@
 				79B9C0BC1C7F9F83000B61C8 /* Social.framework */,
 				79B9C0BE1C7F9F89000B61C8 /* SystemConfiguration.framework */,
 				79B9C0C01C7F9F9E000B61C8 /* WebKit.framework */,
-				79B9C0AE1C7F9F3B000B61C8 /* KinveyKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -565,6 +565,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/EventPlanner/Frameworks",
+					"$(PROJECT_DIR)/EventPlanner",
 				);
 				INFOPLIST_FILE = EventPlanner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -584,6 +585,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/EventPlanner/Frameworks",
+					"$(PROJECT_DIR)/EventPlanner",
 				);
 				INFOPLIST_FILE = EventPlanner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

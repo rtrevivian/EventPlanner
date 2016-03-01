@@ -15,6 +15,7 @@ class Event: NSObject {
     var entityId: String?
     var metadata: KCSMetadata?
     
+    var user: KCSUser?
     var name: String?
     var eventType: EventType? {
         didSet {
@@ -116,6 +117,7 @@ class Event: NSObject {
     func clone(event: Event) {
         entityId = event.entityId
         metadata = event.metadata
+        user = event.user
         name = event.name
         eventType = event.eventType
         dressCode = event.dressCode
@@ -139,6 +141,10 @@ class Event: NSObject {
             "entityId" : KCSEntityKeyId, //the required _id field
             "metadata" : KCSEntityKeyMetadata, //optional _metadata field
             "name" : "name",
+            "user" : "user",
+            
+            "eventType" : "eventType",
+            "dressCode" : "dressCode",
             
             "eventTypeID" : "eventTypeID",
             "dressCodeID" : "dressCodeID",
@@ -155,6 +161,24 @@ class Event: NSObject {
             "facebook" : "facebook",
             "twitter" : "twitter",
             "instagram" : "instagram"
+        ]
+    }
+    
+    static override func kinveyPropertyToCollectionMapping() -> [NSObject : AnyObject]! {
+        return [
+            "eventType" : "EventTypes",
+            "dressCode" : "DressCodes",
+            "user" : KCSUserCollectionName
+        ]
+    }
+    
+    static override func kinveyObjectBuilderOptions() -> [NSObject : AnyObject]! {
+        return [
+            KCS_REFERENCE_MAP_KEY : [
+                "eventType" : EventType.self,
+                "dressCode" : DressCode.self,
+                "user" : KCSUser.self
+            ]
         ]
     }
     

@@ -10,7 +10,7 @@ import UIKit
 
 class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
 
-    // MARK: - Outlet text fields
+    // MARK: - Outlet textfields
     
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var typeTextField: UITextField!
@@ -85,18 +85,21 @@ class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
             textField.delegate = self
         }
         
-        title = "New Event"
         event = Event()
         if editEvent != nil {
             event.clone(editEvent)
             title = editEvent.name
+        } else {
+            event.user = KCSUser.activeUser()
+            event.users = [KCSUser.activeUser()]
+            title = "New Event"
         }
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        navigationItem.rightBarButtonItem?.enabled = event.name != nil && !event.name!.isEmpty
+//        navigationItem.rightBarButtonItem?.enabled = event.name != nil && !event.name!.isEmpty
         
         endCellEnabled = event.startDate != nil
         
@@ -269,8 +272,6 @@ class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
     }
     
     // MARK: - Navigation
-    
-    let detailTransitioningDelegate = OverlayTransitioningDelegate()
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == segueSelect {

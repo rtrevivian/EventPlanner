@@ -132,10 +132,11 @@ class EventPlanner {
     }
     
     func getEvents(completionHandler: ((Bool) -> Void)?) {
-        eventsStore.queryWithQuery(KCSQuery(), withCompletionBlock: { (objects, error) -> Void in
+        events = [Event]()
+        let query = KCSQuery(onField: "user._id", withExactMatchForValue: KCSUser.activeUser())
+        eventsStore.queryWithQuery(query, withCompletionBlock: { (objects, error) -> Void in
             guard error == nil else {
                 print("getEvents error:", error)
-                self.events = [Event]()
                 completionHandler?(false)
                 return
             }
@@ -145,7 +146,7 @@ class EventPlanner {
     }
     
     func saveEvents(events: [Event], completionHandler: ((Bool) -> Void)?) {
-        eventsStore.saveObject(eventsStore, withCompletionBlock: { (objects, error) -> Void in
+        eventsStore.saveObject(events, withCompletionBlock: { (objects, error) -> Void in
             guard error == nil else {
                 print("saveEvents error:", error)
                 completionHandler?(false)

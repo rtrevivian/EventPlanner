@@ -45,8 +45,16 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     // MARK: - Actions
     
     @IBAction func didTapLoginButton(sender: UIButton) {
+        login("rich", password: "Password1")
+    }
+    
+    @IBAction func didTapLoginAsSonyaButton(sender: UIButton) {
+        login("sonya", password: "Password0")
+    }
+    
+    func login(username: String, password: String) {
         loginButton.enabled = false
-        eventPlanner.login("rich", password: "Password1") { (success, result) -> Void in
+        eventPlanner.login(username, password: password) { (success, result) -> Void in
             if success {
                 self.performSegueWithIdentifier(self.segueEvents, sender: self)
                 self.loginButton.enabled = true
