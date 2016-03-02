@@ -117,25 +117,17 @@ class EventDetailTableViewController: UITableViewController {
         }
         
         var venueRows = [Row]()
-        if let address = event.address {
-            if !address.isEmpty {
-                venueRows.append(.Address)
-            }
+        if !event.address.isEmpty {
+            venueRows.append(.Address)
         }
-        if let phone = event.phone {
-            if !phone.isEmpty {
-                venueRows.append(.Phone)
-            }
+        if !event.phone.isEmpty {
+            venueRows.append(.Phone)
         }
-        if let email = event.email {
-            if !email.isEmpty {
-                venueRows.append(.Email)
-            }
+        if !event.email.isEmpty {
+            venueRows.append(.Email)
         }
-        if let website = event.website {
-            if !website.isEmpty {
-                venueRows.append(.Website)
-            }
+        if !event.website.isEmpty {
+            venueRows.append(.Website)
         }
         if !venueRows.isEmpty {
             var venue = Section(header: "Venue", footer: nil)
@@ -144,20 +136,14 @@ class EventDetailTableViewController: UITableViewController {
         }
         
         var socialRows = [Row]()
-        if let twitter = event.twitter {
-            if !twitter.isEmpty {
-                socialRows.append(.Twitter)
-            }
+        if !event.twitter.isEmpty {
+            socialRows.append(.Twitter)
         }
-        if let facebook = event.facebook {
-            if !facebook.isEmpty {
-                socialRows.append(.Facebook)
-            }
+        if !event.facebook.isEmpty {
+            socialRows.append(.Facebook)
         }
-        if let instagram = event.instagram {
-            if !instagram.isEmpty {
-                socialRows.append(.Instagram)
-            }
+        if !event.instagram.isEmpty {
+            socialRows.append(.Instagram)
         }
         if !socialRows.isEmpty {
             var social = Section(header: "Social", footer: nil)
@@ -246,37 +232,38 @@ class EventDetailTableViewController: UITableViewController {
         let row = getTableViewRow(indexPath)
         switch row {
         case .Address:
-            openMaps(event.address!)
+            openMaps(event.address)
             break;
         case .DressCode:
             break;
         case .Email:
-            openEmail(event.email!)
+            openEmail(event.email)
             break;
         case .End:
             break;
         case .Facebook:
-            openFacebookPage(event.facebook!)
+            openFacebookPage(event.facebook)
             break;
         case .Instagram:
-            openInstagramWithHastag(event.instagram!)
+            openInstagramWithHastag(event.instagram)
             break;
         case .Phone:
-            openPhone(event.phone!)
+            openPhone(event.phone)
             break;
         case .RSVP:
             break;
         case .Start:
             break;
         case .Twitter:
-            openTwitterWithHashtag(event.twitter!)
+            openTwitterWithHashtag(event.twitter)
             break;
         case .Type:
             break;
         case .Website:
-            openURL(event.website!)
+            openURL(event.website)
             break;
         }
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
 
     override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -284,25 +271,25 @@ class EventDetailTableViewController: UITableViewController {
         let row = getTableViewRow(indexPath)
         switch row {
         case .Address:
-            highlight = event.address == nil ? false : !event.address!.isEmpty
+            highlight = !event.address.isEmpty
             break;
         case .DressCode:
             highlight = false
             break;
         case .Email:
-            highlight = event.email == nil ? false : !event.email!.isEmpty
+            highlight = !event.email.isEmpty
             break;
         case .End:
             highlight = false
             break;
         case .Facebook:
-            highlight = event.facebook == nil ? false : !event.facebook!.isEmpty
+            highlight = !event.facebook.isEmpty
             break;
         case .Instagram:
-            highlight = event.instagram == nil ? false : !event.instagram!.isEmpty
+            highlight = !event.instagram.isEmpty
             break;
         case .Phone:
-            highlight = event.phone == nil ? false : !event.phone!.isEmpty
+            highlight = !event.phone.isEmpty
             break;
         case .RSVP:
             highlight = false
@@ -311,13 +298,13 @@ class EventDetailTableViewController: UITableViewController {
             highlight = false
             break;
         case .Twitter:
-            highlight = event.twitter == nil ? false : !event.twitter!.isEmpty
+            highlight = !event.twitter.isEmpty
             break;
         case .Type:
             highlight = false
             break;
         case .Website:
-            highlight = event.website == nil ? false : !event.website!.isEmpty
+            highlight = !event.website.isEmpty
             break;
         }
         return highlight

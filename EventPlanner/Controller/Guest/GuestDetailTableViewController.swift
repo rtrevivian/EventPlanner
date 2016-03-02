@@ -50,7 +50,7 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
     
     let segueEventEdit = "segueGuestEdit"
     
-    var person: Guest!
+    var guest: Guest!
     
     var sections = [Section]()
     
@@ -58,7 +58,7 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
         super.viewDidLoad()
         
         refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: "getPerson", forControlEvents: UIControlEvents.ValueChanged)
+        refreshControl?.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Edit, target: self, action: "didTapEditButton:")
     }
@@ -67,7 +67,68 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
         super.viewWillAppear(animated)
         
         navigationController?.setToolbarHidden(true, animated: false)
-        getPerson()
+        refresh()
+    }
+    
+    // MARK: - Data management
+    
+    func refresh() {
+        eventPlanner.getGuest(guest) { (guest) -> Void in
+            self.guest = guest
+            self.getRows()
+        }
+    }
+    
+    func getRows() {
+        title = guest.name
+        sections = [Section]()
+        
+        var basicRows = [Row]()
+        if !guest.rsvp.isEmpty {
+            basicRows.append(.RSVP)
+        }
+        if !basicRows.isEmpty {
+            var basic = Section(header: nil, footer: nil)
+            basic.rows = basicRows
+            sections.append(basic)
+        }
+        
+        var contactRows = [Row]()
+        if !guest.address.isEmpty {
+            contactRows.append(.Address)
+        }
+        if !guest.phone.isEmpty {
+            contactRows.append(.Phone)
+        }
+        if !guest.email.isEmpty {
+            contactRows.append(.Email)
+        }
+        if !guest.website.isEmpty {
+            contactRows.append(.Website)
+        }
+        if !contactRows.isEmpty {
+            var contact = Section(header: "Contact", footer: nil)
+            contact.rows = contactRows
+            sections.append(contact)
+        }
+        
+        var socialRows = [Row]()
+        if !guest.twitter.isEmpty {
+            socialRows.append(.Twitter)
+        }
+        if !guest.facebook.isEmpty {
+            socialRows.append(.Facebook)
+        }
+        if !guest.instagram.isEmpty {
+            socialRows.append(.Instagram)
+        }
+        if !socialRows.isEmpty {
+            var social = Section(header: "Social", footer: nil)
+            social.rows = socialRows
+            sections.append(social)
+        }
+        tableView.reloadData()
+        refreshControl?.endRefreshing()
     }
     
     // MARK: - Table view data source
@@ -94,34 +155,34 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
         switch row {
         case .Address:
             cell.imageView?.image = UIImage(named: "location")
-            cell.textLabel?.text = person.address
+            cell.textLabel?.text = guest.address
             break;
         case .Email:
             cell.imageView?.image = UIImage(named: "message")
-            cell.textLabel?.text = person.email
+            cell.textLabel?.text = guest.email
             break;
         case .Facebook:
             cell.imageView?.image = UIImage(named: "facebook")
-            cell.textLabel?.text = person.facebook
+            cell.textLabel?.text = guest.facebook
             break;
         case .Instagram:
             cell.imageView?.image = UIImage(named: "instagram")
-            cell.textLabel?.text = person.instagram
+            cell.textLabel?.text = guest.instagram
             break;
         case .Phone:
             cell.imageView?.image = UIImage(named: "phone")
-            cell.textLabel?.text = person.phone
+            cell.textLabel?.text = guest.phone
             break;
         case .RSVP:
             cell.textLabel?.text = "Hello"
             break;
         case .Twitter:
             cell.imageView?.image = UIImage(named: "twitter")
-            cell.textLabel?.text = person.twitter
+            cell.textLabel?.text = guest.twitter
             break;
         case .Website:
             cell.imageView?.image = UIImage(named: "link")
-            cell.textLabel?.text = person.website
+            cell.textLabel?.text = guest.website
             break;
         }
         return cell
@@ -131,29 +192,30 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
         let row = getTableViewRow(indexPath)
         switch row {
         case .Address:
-            openMaps(person.address!)
+            openMaps(guest.address)
             break;
         case .Email:
-            openEmail(person.email!)
+            openEmail(guest.email)
             break;
         case .Facebook:
-            openFacebookPage(person.facebook!)
+            openFacebookPage(guest.facebook)
             break;
         case .Instagram:
-            openInstagramWithHastag(person.instagram!)
+            openInstagramWithHastag(guest.instagram)
             break;
         case .Phone:
-            openPhone(person.phone!)
+            openPhone(guest.phone)
             break;
         case .RSVP:
             break;
         case .Twitter:
-            openTwitterWithHashtag(person.twitter!)
+            openTwitterWithHashtag(guest.twitter)
             break;
         case .Website:
-            openURL(person.website!)
+            openURL(guest.website)
             break;
         }
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     
     override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -161,98 +223,31 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
         let row = getTableViewRow(indexPath)
         switch row {
         case .Address:
-            highlight = person.address == nil ? false : !person.address!.isEmpty
+            highlight = !guest.address.isEmpty
             break;
         case .Email:
-            highlight = person.email == nil ? false : !person.email!.isEmpty
+            highlight = !guest.email.isEmpty
             break;
         case .Facebook:
-            highlight = person.facebook == nil ? false : !person.facebook!.isEmpty
+            highlight = !guest.facebook.isEmpty
             break;
         case .Instagram:
-            highlight = person.instagram == nil ? false : !person.instagram!.isEmpty
+            highlight = !guest.instagram.isEmpty
             break;
         case .Phone:
-            highlight = person.phone == nil ? false : !person.phone!.isEmpty
+            highlight = !guest.phone.isEmpty
             break;
         case .RSVP:
             highlight = false
             break;
         case .Twitter:
-            highlight = person.twitter == nil ? false : !person.twitter!.isEmpty
+            highlight = !guest.twitter.isEmpty
             break;
         case .Website:
-            highlight = person.website == nil ? false : !person.website!.isEmpty
+            highlight = !guest.website.isEmpty
             break;
         }
         return highlight
-    }
-    
-    // MARK: - Helper methods
-    
-    func getPerson() {
-        print("implement getPerson")
-    }
-    
-    func getRows() {
-        title = person.name
-        sections = [Section]()
-        
-        var basicRows = [Row]()
-        if let _ = person.rsvp {
-            basicRows.append(.RSVP)
-        }
-        if !basicRows.isEmpty {
-            var basic = Section(header: nil, footer: nil)
-            basic.rows = basicRows
-            sections.append(basic)
-        }
-        
-        var contactRows = [Row]()
-        if let address = person.address {
-            if !address.isEmpty {
-                contactRows.append(.Address)
-            }
-        }
-        if let phone = person.phone {
-            if !phone.isEmpty {
-                contactRows.append(.Phone)
-            }
-        }
-        if let email = person.email {
-            if !email.isEmpty {
-                contactRows.append(.Email)
-            }
-        }
-        if let website = person.website {
-            if !website.isEmpty {
-                contactRows.append(.Website)
-            }
-        }
-        
-        var socialRows = [Row]()
-        if let twitter = person.twitter {
-            if !twitter.isEmpty {
-                socialRows.append(.Twitter)
-            }
-        }
-        if let facebook = person.facebook {
-            if !facebook.isEmpty {
-                socialRows.append(.Facebook)
-            }
-        }
-        if let instagram = person.instagram {
-            if !instagram.isEmpty {
-                socialRows.append(.Instagram)
-            }
-        }
-        if !socialRows.isEmpty {
-            var social = Section(header: "Social", footer: nil)
-            social.rows = socialRows
-            sections.append(social)
-        }
-        tableView.reloadData()
-        refreshControl?.endRefreshing()
     }
     
     func getTableViewRow(indexPath: NSIndexPath) -> Row {
@@ -268,17 +263,15 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
     // MARK: - Navigation
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        /*
         if segue.identifier == segueEventEdit {
             if let navigator = segue.destinationViewController as? UINavigationController {
-                if let controller = navigator.viewControllers[0] as? EventEditTableViewController {
-                    controller.editEvent = event
+                if let controller = navigator.viewControllers[0] as? GuestEditTableViewController {
+                    controller.editGuest = guest
                     controller.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: controller, action: "didTapCancelButton:")
                     controller.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Save, target: controller, action: "didTapSaveButton:")
                 }
             }
         }
-        */
     }
     
 }

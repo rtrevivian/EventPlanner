@@ -10,8 +10,8 @@ import Foundation
 
 class EventType: NSObject {
     
-    var entityId: String? //Kinvey entity _id
-    var metadata: KCSMetadata? //Kinvey metadata, optional
+    var entityId: String?
+    var metadata: KCSMetadata?
     
     var name = String()
     
@@ -19,8 +19,8 @@ class EventType: NSObject {
     
     override func hostToKinveyPropertyMapping() -> [NSObject : AnyObject]! {
         return [
-            "entityId" : KCSEntityKeyId, //the required _id field
-            "metadata" : KCSEntityKeyMetadata, //optional _metadata field
+            "entityId" : KCSEntityKeyId,
+            "metadata" : KCSEntityKeyMetadata,
             "name" : "name"
         ]
     }

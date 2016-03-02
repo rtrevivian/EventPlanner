@@ -10,46 +10,50 @@ import Foundation
 
 class Event: NSObject {
     
+    enum Change: String {
+        case
+        EventChanged,
+        EventTypeChanged,
+        EventDressCodeChanged,
+        EventUserChanged,
+        EventStartDateChanged,
+        EventEndDateChanged,
+        EventRSVPDateChanged,
+        EventNameChanged,
+        EventAddressChanged,
+        EventPhoneChanged,
+        EventEmailChanged,
+        EventWebsiteChanged,
+        EventFacebookChanged,
+        EventTwitterChanged,
+        EventInstagramChanged,
+        EventTablesChanged,
+        EventGuestsChanged
+    }
+    
+    lazy var eventPlanner: EventPlanner = {
+        return EventPlanner.sharedInstance()
+    }()
+    
     static var dateFormatter = NSDateFormatter()
     
     var entityId: String?
     var metadata: KCSMetadata?
     
-    var user: KCSUser?
-    var name: String?
     var eventType: EventType? {
         didSet {
-            eventTypeID = eventType?.entityId
+            postNotifications(Change.EventTypeChanged.rawValue)
         }
     }
     
     var dressCode: DressCode? {
         didSet {
-            dressCodeID = dressCode?.entityId
+            postNotifications(Change.EventDressCodeChanged.rawValue)
         }
     }
-    
-    var eventTypeID: String? {
+    var user: KCSUser! {
         didSet {
-            if eventTypeID != nil && eventType == nil {
-                for object in EventPlanner.sharedInstance().eventTypes {
-                    if object.entityId == eventTypeID {
-                        eventType = object
-                    }
-                }
-            }
-        }
-    }
-    
-    var dressCodeID: String? {
-        didSet {
-            if dressCodeID != nil && dressCode == nil {
-                for object in EventPlanner.sharedInstance().dressCodes {
-                    if object.entityId == dressCodeID {
-                        dressCode = object
-                    }
-                }
-            }
+            postNotifications(Change.EventUserChanged.rawValue)
         }
     }
     
@@ -70,11 +74,21 @@ class Event: NSObject {
                 endDate = nil
                 rsvpDate = nil
             }
+            postNotifications(Change.EventStartDateChanged.rawValue)
         }
     }
     
-    var endDate: NSDate?
-    var rsvpDate: NSDate?
+    var endDate: NSDate? {
+        didSet {
+            postNotifications(Change.EventEndDateChanged.rawValue)
+        }
+    }
+    
+    var rsvpDate: NSDate? {
+        didSet {
+            postNotifications(Change.EventRSVPDateChanged.rawValue)
+        }
+    }
     
     var start: String? {
         get {
@@ -94,16 +108,65 @@ class Event: NSObject {
         }
     }
     
-    var address: String?
-    var phone: String?
-    var email: String?
-    var website: String?
+    var name = String() {
+        didSet {
+            postNotifications(Change.EventNameChanged.rawValue)
+        }
+    }
     
-    var facebook: String?
-    var twitter: String?
-    var instagram: String?
+    var address = String() {
+        didSet {
+            postNotifications(Change.EventAddressChanged.rawValue)
+        }
+    }
     
-    var guests = [Guest]()
+    var phone = String() {
+        didSet {
+            postNotifications(Change.EventPhoneChanged.rawValue)
+        }
+    }
+    
+    var email = String() {
+        didSet {
+            postNotifications(Change.EventEmailChanged.rawValue)
+        }
+    }
+    
+    var website = String() {
+        didSet {
+            postNotifications(Change.EventWebsiteChanged.rawValue)
+        }
+    }
+    
+    var facebook = String() {
+        didSet {
+            postNotifications(Change.EventFacebookChanged.rawValue)
+        }
+    }
+    
+    var twitter = String() {
+        didSet {
+            postNotifications(Change.EventTwitterChanged.rawValue)
+        }
+    }
+    
+    var instagram = String() {
+        didSet {
+            postNotifications(Change.EventInstagramChanged.rawValue)
+        }
+    }
+    
+    var tables = [Table]() {
+        didSet {
+            postNotifications(Change.EventTablesChanged.rawValue)
+        }
+    }
+    
+    var guests = [Guest]() {
+        didSet {
+            postNotifications(Change.EventGuestsChanged.rawValue)
+        }
+    }
     
     override init() {
         super.init()
@@ -117,7 +180,6 @@ class Event: NSObject {
     func clone(event: Event) {
         entityId = event.entityId
         metadata = event.metadata
-        user = event.user
         name = event.name
         eventType = event.eventType
         dressCode = event.dressCode
@@ -131,7 +193,26 @@ class Event: NSObject {
         phone = event.phone
         email = event.email
         website = event.website
-        guests = event.guests
+        user = event.user
+    }
+    
+    // MARK: - Update
+    
+    func update(completionHandler: (() -> Void)?) {
+        eventPlanner.getTables(self) { (tables) -> Void in
+            self.tables = tables
+            self.eventPlanner.getGuests(self) { (guests) -> Void in
+                self.guests = guests
+                completionHandler?()
+            }
+        }
+    }
+    
+    // MARK: - Notifications
+    
+    func postNotifications(notification: String) {
+        NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: notification, object: self))
+        NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: Change.EventChanged.rawValue, object: self))
     }
     
     // MARK: - Kinvey
@@ -141,13 +222,9 @@ class Event: NSObject {
             "entityId" : KCSEntityKeyId, //the required _id field
             "metadata" : KCSEntityKeyMetadata, //optional _metadata field
             "name" : "name",
-            "user" : "user",
-            
+                
             "eventType" : "eventType",
             "dressCode" : "dressCode",
-            
-            "eventTypeID" : "eventTypeID",
-            "dressCodeID" : "dressCodeID",
             
             "startDate" : "startDate",
             "rsvpDate" : "rsvpDate",
@@ -160,24 +237,26 @@ class Event: NSObject {
             
             "facebook" : "facebook",
             "twitter" : "twitter",
-            "instagram" : "instagram"
+            "instagram" : "instagram",
+            
+            "user" : "user"
         ]
     }
     
     static override func kinveyPropertyToCollectionMapping() -> [NSObject : AnyObject]! {
         return [
+            "user" : KCSUserCollectionName,
             "eventType" : "EventTypes",
             "dressCode" : "DressCodes",
-            "user" : KCSUserCollectionName
         ]
     }
     
     static override func kinveyObjectBuilderOptions() -> [NSObject : AnyObject]! {
         return [
             KCS_REFERENCE_MAP_KEY : [
+                "user" : KCSUser.self,
                 "eventType" : EventType.self,
-                "dressCode" : DressCode.self,
-                "user" : KCSUser.self
+                "dressCode" : DressCode.self
             ]
         ]
     }

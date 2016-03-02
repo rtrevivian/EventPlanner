@@ -16,6 +16,10 @@ class EventsTableViewController: UITableViewController {
         return EventPlanner.sharedInstance()
     }()
     
+    lazy var logoutButton: UIBarButtonItem = {
+        return UIBarButtonItem(title: "Logout", style: .Done, target: self, action: "didTapLogoutButton:")
+    }()
+    
     lazy var addButton: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "didTapAddButton:")
     }()
@@ -27,7 +31,7 @@ class EventsTableViewController: UITableViewController {
     var swipedIndexPath: NSIndexPath!
     
     let segueEventDetail = "segueEventDetail"
-    let segueGuests = "segueGuests"
+    let segueEventTabs = "segueEventTabs"
     
     // MARK: - View
 
@@ -37,8 +41,9 @@ class EventsTableViewController: UITableViewController {
         refreshControl = UIRefreshControl()
         refreshControl!.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
         
-        navigationItem.rightBarButtonItem = self.editButtonItem()
-        setToolbarItems([self.flexibleSpace, self.addButton], animated: true)
+        navigationItem.leftBarButtonItem = logoutButton
+        navigationItem.rightBarButtonItem = editButtonItem()
+        setToolbarItems([flexibleSpace, addButton], animated: true)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -72,7 +77,6 @@ class EventsTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
         let event = eventPlanner.events[indexPath.row]
         cell.textLabel?.text = event.name
-        cell.detailTextLabel!.text = event.guests.count.description + " guest" + (event.guests.count > 0 ? "s" : "")
         return cell
     }
 
@@ -99,7 +103,7 @@ class EventsTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if !editing {
-            performSegueWithIdentifier(segueGuests, sender: eventPlanner.events[indexPath.row])
+            performSegueWithIdentifier(segueEventTabs, sender: eventPlanner.events[indexPath.row])
         }
     }
     
@@ -111,7 +115,7 @@ class EventsTableViewController: UITableViewController {
     
     // MARK: - Actions
     
-    func didTapAddButton(sender: UIBarButtonSystemItem) {
+    func didTapAddButton(sender: UIBarButtonItem) {
         if let navigator = storyboard?.instantiateViewControllerWithIdentifier("eventEditNavigator") as? UINavigationController {
             if let controller = navigator.viewControllers[0] as? EventEditTableViewController {
                 controller.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: controller, action: "didTapCancelButton:")
@@ -120,12 +124,17 @@ class EventsTableViewController: UITableViewController {
             }
         }
     }
+    
+    func didTapLogoutButton(sender: UIBarButtonItem) {
+        eventPlanner.logout()
+        navigationController?.popToRootViewControllerAnimated(true)
+    }
 
     // MARK: - Navigation
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if let event = sender as? Event {
-            if let controller = segue.destinationViewController as? GuestsTableViewController {
+            if let controller = segue.destinationViewController as? EventTabsTableViewController {
                 controller.event = event
             } else if let controller = segue.destinationViewController as? EventDetailTableViewController {
                 controller.event = event

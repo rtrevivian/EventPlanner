@@ -35,6 +35,7 @@ class GuestEditTableViewController: UITableViewController, UITextFieldDelegate {
         return EventPlanner.sharedInstance()
     }()
 
+    var event: Event!
     var editGuest: Guest!
     var guest: Guest!
     
@@ -45,10 +46,12 @@ class GuestEditTableViewController: UITableViewController, UITextFieldDelegate {
         
         let textFields: [UITextField] = [
             nameTextField,
+            
             addressTextField,
             phoneTextField,
             emailTextField,
             websiteTextField,
+            
             twitterTextField,
             facebookTextField,
             instagramTextField
@@ -57,25 +60,39 @@ class GuestEditTableViewController: UITableViewController, UITextFieldDelegate {
             textField.delegate = self
         }
         
-        title = "New Guest"
+        navigationItem.rightBarButtonItem?.enabled = false
+        
         guest = Guest()
         if editGuest != nil {
             guest.clone(editGuest)
             title = editGuest.name
+        } else {
+            guest.event = event
+            title = "New Guest"
         }
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "notificationGuestChanged", name: Guest.Change.GuestChanged.rawValue, object: nil)
+        
         nameTextField.text = guest.name
+        
         addressTextField.text = guest.address
         phoneTextField.text = guest.phone
         emailTextField.text = guest.email
         websiteTextField.text = guest.website
+        
         twitterTextField.text = guest.twitter
         facebookTextField.text = guest.facebook
-        nameTextField.text = guest.instagram
+        instagramTextField.text = guest.instagram
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     // MARK: Table view delegate
@@ -164,14 +181,18 @@ class GuestEditTableViewController: UITableViewController, UITextFieldDelegate {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func didTapSaveButton(sender: UIBarButtonSystemItem) {
+    func didTapSaveButton(sender: UIBarButtonItem) {
         if editGuest != nil {
             editGuest.clone(guest)
             guest = editGuest
         }
-        eventPlanner.saveGuests([guest]) { (success) -> Void in
+        eventPlanner.saveGuests([guest]) { (guests) -> Void in
             self.dismissViewControllerAnimated(true, completion: nil)
         }
+    }
+    
+    func notificationGuestChanged() {
+        navigationItem.rightBarButtonItem?.enabled = !guest.name.isEmpty
     }
     
 }

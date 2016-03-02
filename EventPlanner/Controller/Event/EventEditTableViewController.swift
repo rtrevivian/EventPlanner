@@ -85,13 +85,14 @@ class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
             textField.delegate = self
         }
         
+        navigationItem.rightBarButtonItem?.enabled = false
+        
         event = Event()
         if editEvent != nil {
             event.clone(editEvent)
-            title = editEvent.name
+            title = event.name
         } else {
             event.user = KCSUser.activeUser()
-            event.users = [KCSUser.activeUser()]
             title = "New Event"
         }
     }
@@ -99,7 +100,7 @@ class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-//        navigationItem.rightBarButtonItem?.enabled = event.name != nil && !event.name!.isEmpty
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "heardEventChanged", name: Event.Change.EventChanged.rawValue, object: nil)
         
         endCellEnabled = event.startDate != nil
         
@@ -118,6 +119,12 @@ class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
         startTextField.text = event.start
         endTextField.text = event.end
         rsvpTextField.text = event.rsvp
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     // MARK: Table view delegate
@@ -261,7 +268,8 @@ class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func didTapSaveButton(sender: UIBarButtonSystemItem) {
+    func didTapSaveButton(sender: UIBarButtonItem) {
+        sender.enabled = false
         if editEvent != nil {
             editEvent.clone(event)
             event = editEvent
@@ -269,6 +277,10 @@ class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
         eventPlanner.saveEvents([event]) { (success) -> Void in
             self.dismissViewControllerAnimated(true, completion: nil)
         }
+    }
+    
+    func heardEventChanged() {
+        navigationItem.rightBarButtonItem?.enabled = !event.name.isEmpty
     }
     
     // MARK: - Navigation

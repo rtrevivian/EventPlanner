@@ -1,5 +1,5 @@
 //
-//  Attendee.swift
+//  Guest.swift
 //  EventPlanner
 //
 //  Created by Richard Trevivian on 2/20/16.
@@ -10,26 +10,103 @@ import Foundation
 
 class Guest: NSObject {
     
-    var entityId: String? //Kinvey entity _id
-    var metadata: KCSMetadata? //Kinvey metadata, optional
+    enum Change: String {
+        case
+        GuestChanged,
+        GuestEventChanged,
+        GuestNameChanged,
+        GuestRSVPChanged,
+        GuestAddressChanged,
+        GuestPhoneChanged,
+        GuestEmailChanged,
+        GuestWebsiteChanged,
+        GuestFacebookChanged,
+        GuestTwitterChanged,
+        GuestInstagramChanged
+    }
     
-    var name: String?
-    var rsvp: String?
+    var entityId: String?
+    var metadata: KCSMetadata?
     
-    var address: String?
-    var phone: String?
-    var email: String?
-    var website: String?
+    var event: Event! {
+        didSet {
+            postNotifications(Change.GuestEventChanged.rawValue)
+        }
+    }
     
-    var facebook: String?
-    var twitter: String?
-    var instagram: String?
+    var name = String() {
+        didSet {
+            postNotifications(Change.GuestNameChanged.rawValue)
+        }
+    }
+    
+    var rsvp = String() {
+        didSet {
+            postNotifications(Change.GuestRSVPChanged.rawValue)
+        }
+    }
+    
+    var address = String() {
+        didSet {
+            postNotifications(Change.GuestAddressChanged.rawValue)
+        }
+    }
+    
+    var phone = String() {
+        didSet {
+            postNotifications(Change.GuestPhoneChanged.rawValue)
+            
+        }
+    }
+    
+    var email = String() {
+        didSet {
+            postNotifications(Change.GuestEmailChanged.rawValue)
+            
+        }
+    }
+    
+    var website = String() {
+        didSet {
+            postNotifications(Change.GuestWebsiteChanged.rawValue)
+            
+        }
+    }
+    
+    var facebook = String() {
+        didSet {
+            postNotifications(Change.GuestFacebookChanged.rawValue)
+            
+        }
+    }
+    
+    var twitter = String() {
+        didSet {
+            postNotifications(Change.GuestTwitterChanged.rawValue)
+            
+        }
+    }
+    
+    var instagram = String() {
+        didSet {
+            postNotifications(Change.GuestInstagramChanged.rawValue)
+        }
+    }
+    
+    // MARK: - Notifications
+    
+    func postNotifications(notification: String) {
+        NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: notification, object: self))
+        NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: Change.GuestChanged.rawValue, object: self))
+    }
     
     // MARK: - Clone
     
     func clone(person: Guest) {
         entityId = person.entityId
         metadata = person.metadata
+        event = person.event
+        
         name = person.name
         rsvp = person.rsvp
         address = person.address
@@ -47,7 +124,31 @@ class Guest: NSObject {
         return [
             "entityId" : KCSEntityKeyId, //the required _id field
             "metadata" : KCSEntityKeyMetadata, //optional _metadata field
-            "name" : "name"
+            "event" : "event",
+            
+            "name" : "name",
+            "rsvp" : "rsvp",
+            "address" : "address",
+            "phone" : "phone",
+            "email" : "email",
+            "website" : "website",
+            "facebook" : "facebook",
+            "twitter" : "twitter",
+            "instagram" : "instagram",
+        ]
+    }
+    
+    static override func kinveyPropertyToCollectionMapping() -> [NSObject : AnyObject]! {
+        return [
+            "event" : "Events"
+        ]
+    }
+    
+    static override func kinveyObjectBuilderOptions() -> [NSObject : AnyObject]! {
+        return [
+            KCS_REFERENCE_MAP_KEY : [
+                "event" : Event.self
+            ]
         ]
     }
     

@@ -34,14 +34,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         navigationController?.toolbarHidden = true
     }
 
-    // MARK: - Navigation
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == segueEvents {
-            
-        }
-    }
-    
     // MARK: - Actions
     
     @IBAction func didTapLoginButton(sender: UIButton) {

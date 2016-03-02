@@ -20,8 +20,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
         UINavigationBar.appearance().barStyle = .BlackTranslucent
         
+        /*
         UIToolbar.appearance().barTintColor = Colors.color4
         UIToolbar.appearance().tintColor = UIColor.whiteColor()
+        */
         
         UIButton.appearance().tintColor = Colors.color1
 
@@ -54,4 +56,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 }
-
