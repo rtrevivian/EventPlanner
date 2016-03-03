@@ -13,6 +13,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var loginButton: UIButton!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     lazy var eventPlanner: EventPlanner = {
        return EventPlanner.sharedInstance()
@@ -22,7 +23,12 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        emailTextField.delegate = self
+        passwordTextField.delegate = self
+        
+        loginButton.backgroundColor = Colors.color1
+        loginButton.tintColor = UIColor.whiteColor()
         emailTextField.text = "rich"
         passwordTextField.text = "Password1"
     }
@@ -33,28 +39,46 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         navigationController?.navigationBarHidden = true
         navigationController?.toolbarHidden = true
     }
+    
+    // MARK: - Text field delegate
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        return true
+    }
 
     // MARK: - Actions
     
     @IBAction func didTapLoginButton(sender: UIButton) {
-        login("rich", password: "Password1")
-    }
-    
-    @IBAction func didTapLoginAsSonyaButton(sender: UIButton) {
-        login("sonya", password: "Password0")
+        login(emailTextField.text!, password: passwordTextField.text!)
     }
     
     func login(username: String, password: String) {
-        loginButton.enabled = false
-        eventPlanner.login(username, password: password) { (success, result) -> Void in
-            if success {
-                self.performSegueWithIdentifier(self.segueEvents, sender: self)
-                self.loginButton.enabled = true
+        if let username = emailTextField.text {
+            if username.isEmpty {
+                presentSimpleAlert("Email required", message: "Please enter a valid email")
             } else {
-                if let message = result as? String {
-                    self.presentSimpleAlert(nil, message: message)
+                if let password = passwordTextField.text {
+                    if password.isEmpty {
+                        presentSimpleAlert("Password required", message: "Please enter a password")
+                    } else {
+                        loginButton.enabled = false
+                        activityIndicator.startAnimating()
+                        eventPlanner.login(username, password: password) { (success, result) -> Void in
+                            if success {
+                                self.eventPlanner.getEvents({ (success) -> Void in
+                                    self.performSegueWithIdentifier(self.segueEvents, sender: self)
+                                    self.loginButton.enabled = true
+                                })
+                            } else {
+                                if let message = result as? String {
+                                    self.presentSimpleAlert(nil, message: message)
+                                }
+                            }
+                            self.loginButton.enabled = true
+                            self.activityIndicator.stopAnimating()
+                        }
+                    }
                 }
-                self.loginButton.enabled = true
             }
         }
     }

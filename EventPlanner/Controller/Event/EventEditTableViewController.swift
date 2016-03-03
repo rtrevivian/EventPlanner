@@ -100,7 +100,8 @@ class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "heardEventChanged", name: Event.Change.EventChanged.rawValue, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "notificationEventChanged", name: Event.Change.EventChanged.rawValue, object: nil)
+        notificationEventChanged()
         
         endCellEnabled = event.startDate != nil
         
@@ -279,7 +280,7 @@ class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
         }
     }
     
-    func heardEventChanged() {
+    func notificationEventChanged() {
         navigationItem.rightBarButtonItem?.enabled = !event.name.isEmpty
     }
     

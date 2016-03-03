@@ -15,17 +15,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
+        /*
         UINavigationBar.appearance().barTintColor = Colors.color1
         UINavigationBar.appearance().tintColor = UIColor.whiteColor()
         UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
         UINavigationBar.appearance().barStyle = .BlackTranslucent
+        */
         
         /*
         UIToolbar.appearance().barTintColor = Colors.color4
         UIToolbar.appearance().tintColor = UIColor.whiteColor()
         */
         
+        UINavigationBar.appearance().tintColor = Colors.color1
         UIButton.appearance().tintColor = Colors.color1
+        UIToolbar.appearance().tintColor = Colors.color1
 
         EventPlanner.sharedInstance().start()
         return true

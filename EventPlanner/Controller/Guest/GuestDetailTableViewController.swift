@@ -67,68 +67,7 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
         super.viewWillAppear(animated)
         
         navigationController?.setToolbarHidden(true, animated: false)
-        refresh()
-    }
-    
-    // MARK: - Data management
-    
-    func refresh() {
-        eventPlanner.getGuest(guest) { (guest) -> Void in
-            self.guest = guest
-            self.getRows()
-        }
-    }
-    
-    func getRows() {
-        title = guest.name
-        sections = [Section]()
-        
-        var basicRows = [Row]()
-        if !guest.rsvp.isEmpty {
-            basicRows.append(.RSVP)
-        }
-        if !basicRows.isEmpty {
-            var basic = Section(header: nil, footer: nil)
-            basic.rows = basicRows
-            sections.append(basic)
-        }
-        
-        var contactRows = [Row]()
-        if !guest.address.isEmpty {
-            contactRows.append(.Address)
-        }
-        if !guest.phone.isEmpty {
-            contactRows.append(.Phone)
-        }
-        if !guest.email.isEmpty {
-            contactRows.append(.Email)
-        }
-        if !guest.website.isEmpty {
-            contactRows.append(.Website)
-        }
-        if !contactRows.isEmpty {
-            var contact = Section(header: "Contact", footer: nil)
-            contact.rows = contactRows
-            sections.append(contact)
-        }
-        
-        var socialRows = [Row]()
-        if !guest.twitter.isEmpty {
-            socialRows.append(.Twitter)
-        }
-        if !guest.facebook.isEmpty {
-            socialRows.append(.Facebook)
-        }
-        if !guest.instagram.isEmpty {
-            socialRows.append(.Instagram)
-        }
-        if !socialRows.isEmpty {
-            var social = Section(header: "Social", footer: nil)
-            social.rows = socialRows
-            sections.append(social)
-        }
-        tableView.reloadData()
-        refreshControl?.endRefreshing()
+        reload()
     }
     
     // MARK: - Table view data source
@@ -252,6 +191,67 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
     
     func getTableViewRow(indexPath: NSIndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
+    }
+    
+    // MARK: - Refresh
+    
+    func refresh() {
+        eventPlanner.getGuest(guest) { (guest) -> Void in
+            self.guest = guest
+            self.reload()
+        }
+    }
+    
+    func reload() {
+        title = guest.name
+        sections = [Section]()
+        
+        var basicRows = [Row]()
+        if !guest.rsvp.isEmpty {
+            basicRows.append(.RSVP)
+        }
+        if !basicRows.isEmpty {
+            var basic = Section(header: nil, footer: nil)
+            basic.rows = basicRows
+            sections.append(basic)
+        }
+        
+        var contactRows = [Row]()
+        if !guest.address.isEmpty {
+            contactRows.append(.Address)
+        }
+        if !guest.phone.isEmpty {
+            contactRows.append(.Phone)
+        }
+        if !guest.email.isEmpty {
+            contactRows.append(.Email)
+        }
+        if !guest.website.isEmpty {
+            contactRows.append(.Website)
+        }
+        if !contactRows.isEmpty {
+            var contact = Section(header: "Contact", footer: nil)
+            contact.rows = contactRows
+            sections.append(contact)
+        }
+        
+        var socialRows = [Row]()
+        if !guest.twitter.isEmpty {
+            socialRows.append(.Twitter)
+        }
+        if !guest.facebook.isEmpty {
+            socialRows.append(.Facebook)
+        }
+        if !guest.instagram.isEmpty {
+            socialRows.append(.Instagram)
+        }
+        if !socialRows.isEmpty {
+            var social = Section(header: "Social", footer: nil)
+            social.rows = socialRows
+            sections.append(social)
+        }
+        tableView.reloadData()
+        refreshControl?.endRefreshing()
     }
     
     // MARK: - Actions

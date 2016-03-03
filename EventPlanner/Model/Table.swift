@@ -39,7 +39,9 @@ class Table: NSObject {
         }
     }
     
-    // MARK: - Clone
+    var assigned = 0
+    
+    // MARK: - Helpers
     
     func clone(table: Table) {
         entityId = table.entityId

@@ -872,47 +872,79 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="3vt-st-q4w">
-                                <rect key="frame" x="180" y="234" width="240" height="132"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="zWr-WK-BVu">
+                                <rect key="frame" x="0.0" y="167" width="600" height="266"/>
                                 <subviews>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="CVv-jr-6OK">
-                                        <rect key="frame" x="0.0" y="0.0" width="240" height="30"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
-                                    </textField>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="C3R-yR-gzx">
-                                        <rect key="frame" x="0.0" y="34" width="240" height="30"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
-                                    </textField>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fez-ya-6iR">
-                                        <rect key="frame" x="0.0" y="68" width="240" height="30"/>
-                                        <state key="normal" title="Login as Rich"/>
-                                        <connections>
-                                            <action selector="didTapLoginButton:" destination="VFH-SH-S23" eventType="touchUpInside" id="FWf-rK-J5x"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RFj-mK-B0c">
-                                        <rect key="frame" x="0.0" y="102" width="240" height="30"/>
-                                        <state key="normal" title="Login as Sonya"/>
-                                        <connections>
-                                            <action selector="didTapLoginAsSonyaButton:" destination="VFH-SH-S23" eventType="touchUpInside" id="s35-rP-pi3"/>
-                                        </connections>
-                                    </button>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Lls-ic-OnH">
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="266"/>
+                                        <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="EventPlanner_logo" translatesAutoresizingMaskIntoConstraints="NO" id="CN5-EL-K8w">
+                                                <rect key="frame" x="0.0" y="0.0" width="600" height="80"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="80" id="X3s-2L-Qdh"/>
+                                                </constraints>
+                                            </imageView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="3vt-st-q4w">
+                                                <rect key="frame" x="0.0" y="100" width="600" height="116"/>
+                                                <subviews>
+                                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="CVv-jr-6OK">
+                                                        <rect key="frame" x="0.0" y="0.0" width="600" height="36"/>
+                                                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="36" id="2Oo-W9-kV3"/>
+                                                        </constraints>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                        <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
+                                                    </textField>
+                                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="C3R-yR-gzx">
+                                                        <rect key="frame" x="0.0" y="40" width="600" height="36"/>
+                                                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="36" id="i7U-jD-phD"/>
+                                                        </constraints>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                        <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
+                                                    </textField>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fez-ya-6iR">
+                                                        <rect key="frame" x="0.0" y="80" width="600" height="36"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="36" id="qXp-lP-sB0"/>
+                                                        </constraints>
+                                                        <state key="normal" title="Login"/>
+                                                        <connections>
+                                                            <action selector="didTapLoginButton:" destination="VFH-SH-S23" eventType="touchUpInside" id="FWf-rK-J5x"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                            </stackView>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cZD-ZV-EIG">
+                                                <rect key="frame" x="0.0" y="236" width="600" height="30"/>
+                                                <subviews>
+                                                    <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Nm9-B9-eMV">
+                                                        <rect key="frame" x="290" y="5" width="20" height="20"/>
+                                                    </activityIndicatorView>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="Nm9-B9-eMV" firstAttribute="centerX" secondItem="cZD-ZV-EIG" secondAttribute="centerX" id="FFe-0Z-E4X"/>
+                                                    <constraint firstAttribute="height" constant="30" id="dQd-2W-i7p"/>
+                                                    <constraint firstItem="Nm9-B9-eMV" firstAttribute="centerY" secondItem="cZD-ZV-EIG" secondAttribute="centerY" id="ekD-56-Hqd"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                    </stackView>
                                 </subviews>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="240" id="17X-1N-zvV"/>
-                                </constraints>
                             </stackView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="3vt-st-q4w" firstAttribute="centerX" secondItem="N10-5o-RSa" secondAttribute="centerX" id="j6r-Eu-84x"/>
-                            <constraint firstItem="3vt-st-q4w" firstAttribute="centerY" secondItem="N10-5o-RSa" secondAttribute="centerY" id="yIq-7U-cH0"/>
+                            <constraint firstItem="zWr-WK-BVu" firstAttribute="leading" secondItem="N10-5o-RSa" secondAttribute="leadingMargin" constant="-20" id="7c4-Q9-BxR"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="zWr-WK-BVu" secondAttribute="trailing" constant="-20" id="cav-wg-WZG"/>
+                            <constraint firstItem="zWr-WK-BVu" firstAttribute="centerY" secondItem="N10-5o-RSa" secondAttribute="centerY" id="y60-gm-qfr"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="vIb-82-CJM"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="Nm9-B9-eMV" id="WOe-pQ-hdz"/>
                         <outlet property="emailTextField" destination="CVv-jr-6OK" id="W63-cV-fdV"/>
                         <outlet property="loginButton" destination="Fez-ya-6iR" id="F7M-Ev-bAq"/>
                         <outlet property="passwordTextField" destination="C3R-yR-gzx" id="632-5E-mAK"/>
@@ -1386,4 +1418,7 @@
             <point key="canvasLocation" x="-118" y="502"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="EventPlanner_logo" width="50" height="50"/>
+    </resources>
 </document>

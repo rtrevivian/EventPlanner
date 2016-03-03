@@ -15,7 +15,7 @@ class Seat: NSObject {
         SeatChanged,
         SeatTableChanged,
         SeatGuestChanged,
-        SeatNameChanged
+        SeatNumberChanged
     }
     
     var entityId: String?
@@ -27,13 +27,13 @@ class Seat: NSObject {
         }
     }
     
-    var name = String() {
+    var number = NSNumber() {
         didSet {
-            postNotifications(Change.SeatNameChanged.rawValue)
+            postNotifications(Change.SeatNumberChanged.rawValue)
         }
     }
     
-    var table: Event! {
+    var table: Table! {
         didSet {
             postNotifications(Change.SeatTableChanged.rawValue)
         }
@@ -53,7 +53,7 @@ class Seat: NSObject {
             "entityId" : KCSEntityKeyId,
             "metadata" : KCSEntityKeyMetadata,
             "guest" : "guest",
-            "name" : "name",
+            "number" : "number",
             "table" : "table"
         ]
     }

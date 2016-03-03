@@ -158,12 +158,14 @@ class Event: NSObject {
     
     var tables = [Table]() {
         didSet {
+            print("EventTablesChanged ")
             postNotifications(Change.EventTablesChanged.rawValue)
         }
     }
     
     var guests = [Guest]() {
         didSet {
+            print("EventGuestsChanged")
             postNotifications(Change.EventGuestsChanged.rawValue)
         }
     }

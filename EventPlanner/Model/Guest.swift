@@ -22,7 +22,8 @@ class Guest: NSObject {
         GuestWebsiteChanged,
         GuestFacebookChanged,
         GuestTwitterChanged,
-        GuestInstagramChanged
+        GuestInstagramChanged,
+        GuestSeatChanged
     }
     
     var entityId: String?
@@ -31,6 +32,12 @@ class Guest: NSObject {
     var event: Event! {
         didSet {
             postNotifications(Change.GuestEventChanged.rawValue)
+        }
+    }
+    
+    var seat: Seat? {
+        didSet {
+            postNotifications(Change.GuestSeatChanged.rawValue)
         }
     }
     
@@ -105,7 +112,9 @@ class Guest: NSObject {
     func clone(person: Guest) {
         entityId = person.entityId
         metadata = person.metadata
+        
         event = person.event
+        seat = person.seat
         
         name = person.name
         rsvp = person.rsvp
@@ -124,7 +133,9 @@ class Guest: NSObject {
         return [
             "entityId" : KCSEntityKeyId, //the required _id field
             "metadata" : KCSEntityKeyMetadata, //optional _metadata field
+            
             "event" : "event",
+            "seat" : "seat",
             
             "name" : "name",
             "rsvp" : "rsvp",
@@ -140,14 +151,16 @@ class Guest: NSObject {
     
     static override func kinveyPropertyToCollectionMapping() -> [NSObject : AnyObject]! {
         return [
-            "event" : "Events"
+            "event" : "Events",
+            "seat" : "Seats"
         ]
     }
     
     static override func kinveyObjectBuilderOptions() -> [NSObject : AnyObject]! {
         return [
             KCS_REFERENCE_MAP_KEY : [
-                "event" : Event.self
+                "event" : Event.self,
+                "seat" : Seat.self
             ]
         ]
     }

@@ -10,7 +10,7 @@ import UIKit
 
 class GuestEditTableViewController: UITableViewController, UITextFieldDelegate {
     
-    // MARK: - Outlet textfield
+    // MARK: - Outlet textfields
     
     @IBOutlet weak var nameTextField: UITextField!
     
@@ -65,7 +65,7 @@ class GuestEditTableViewController: UITableViewController, UITextFieldDelegate {
         guest = Guest()
         if editGuest != nil {
             guest.clone(editGuest)
-            title = editGuest.name
+            title = guest.name
         } else {
             guest.event = event
             title = "New Guest"
@@ -182,11 +182,13 @@ class GuestEditTableViewController: UITableViewController, UITextFieldDelegate {
     }
     
     func didTapSaveButton(sender: UIBarButtonItem) {
-        if editGuest != nil {
-            editGuest.clone(guest)
-            guest = editGuest
-        }
         eventPlanner.saveGuests([guest]) { (guests) -> Void in
+            if self.editGuest != nil {
+                self.editGuest.clone(guests[0])
+                
+            } else {
+                self.event.guests.appendContentsOf(guests)
+            }
             self.dismissViewControllerAnimated(true, completion: nil)
         }
     }

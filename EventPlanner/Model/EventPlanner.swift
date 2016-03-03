@@ -42,6 +42,11 @@ class EventPlanner {
         KCSStoreKeyCollectionTemplateClass : RSVPType.self
         ])
     
+    let seatsStore = KCSLinkedAppdataStore.storeWithOptions([
+        KCSStoreKeyCollectionName : "Seats",
+        KCSStoreKeyCollectionTemplateClass : Seat.self
+        ])
+    
     let tablesStore = KCSLinkedAppdataStore.storeWithOptions([
         KCSStoreKeyCollectionName : "Tables",
         KCSStoreKeyCollectionTemplateClass : Table.self
@@ -130,6 +135,10 @@ class EventPlanner {
     // MARK: - Event
     
     func deleteEvents(events: [Event], completionHandler: ((Bool) -> Void)?) {
+        for event in events {
+            deleteGuests(event.guests, completionHandler: nil)
+            deleteTables(event.tables, completionHandler: nil)
+        }
         eventsStore.removeObject(events, withDeletionBlock: { (objects, error) -> Void in
             guard error == nil else {
                 print("deleteEvents error:", error)
@@ -187,6 +196,7 @@ class EventPlanner {
                 completionHandler?(false)
                 return
             }
+            self.events += objects as! [Event]
             completionHandler?(true)
             }, withProgressBlock: nil)
     }
@@ -284,6 +294,54 @@ class EventPlanner {
                 return
             }
             completionHandler?(objects as! [Table])
+            }, withProgressBlock: nil)
+    }
+    
+    // MARK: - Seats
+    
+    func deleteSeats(seats: [Seat], completionHandler: ((Bool) -> Void)?) {
+        seatsStore.removeObject(seats, withDeletionBlock: { (objects, error) -> Void in
+            guard error == nil else {
+                print("deleteSeats error:", error)
+                completionHandler?(false)
+                return
+            }
+            completionHandler?(true)
+            }, withProgressBlock: nil)
+    }
+    
+    func getSeat(seat: Seat, completionHandler: ((Seat?) -> Void)?) {
+        let query = KCSQuery(onField: "_id", withExactMatchForValue: seat.entityId)
+        seatsStore.queryWithQuery(query, withCompletionBlock: { (objects, error) -> Void in
+            guard error == nil else {
+                print("getSeat error:", error)
+                completionHandler?(nil)
+                return
+            }
+            completionHandler?(objects[0] as? Seat)
+            }, withProgressBlock: nil)
+    }
+    
+    func getSeats(event: Event, completionHandler: (([Seat]) -> Void)?) {
+        let query = KCSQuery(onField: "event._id", withExactMatchForValue: event.entityId)
+        seatsStore.queryWithQuery(query, withCompletionBlock: { (objects, error) -> Void in
+            guard error == nil else {
+                print("getSeats error:", error)
+                completionHandler?([])
+                return
+            }
+            completionHandler?(objects as! [Seat])
+            }, withProgressBlock: nil)
+    }
+    
+    func saveSeats(seats: [Seat], completionHandler: (([Seat]) -> Void)?) {
+        seatsStore.saveObject(seats, withCompletionBlock: { (objects, error) -> Void in
+            guard error == nil else {
+                print("saveSeats error:", error)
+                completionHandler?([])
+                return
+            }
+            completionHandler?(objects as! [Seat])
             }, withProgressBlock: nil)
     }
     

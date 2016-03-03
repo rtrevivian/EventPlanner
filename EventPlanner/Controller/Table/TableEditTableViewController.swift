@@ -29,6 +29,7 @@ class TableEditTableViewController: UITableViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.rightBarButtonItem?.enabled = false
         nameTextField.delegate = self
         
         table = Table()
@@ -39,13 +40,23 @@ class TableEditTableViewController: UITableViewController, UITextFieldDelegate {
             table.event = event
             title = "New Table"
         }
+        
         seatsStepper.addTarget(self, action: "didChangeSeatsStepper:", forControlEvents: .ValueChanged)
-        update()
+        seatsStepper.hidden = editTable != nil
+        seatsStepper.value = Double(table.seats)
     }
     
-    func update() {
-        nameTextField.text = table.name
-        seatsTextField.text = table.seats.description
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "notificationTableChanged", name: Table.Change.TableChanged.rawValue, object: nil)
+        reload()
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     // MARK: Table view delegate
@@ -85,13 +96,24 @@ class TableEditTableViewController: UITableViewController, UITextFieldDelegate {
         textField.resignFirstResponder()
         return true
     }
-
+    
+    
+    // MARK: - Helpers
+    
+    func reload() {
+        nameTextField.text = table.name
+        seatsTextField.text = table.seats.description
+    }
+    
+    func notificationTableChanged() {
+        navigationItem.rightBarButtonItem?.enabled = !table.name.isEmpty
+    }
     
     // MARK: - Actions
     
     func didChangeSeatsStepper(sender: UIStepper) {
         table.seats = Int(sender.value)
-        update()
+        reload()
     }
     
     func didTapCancelButton(sender: UIBarButtonItem) {
@@ -99,12 +121,27 @@ class TableEditTableViewController: UITableViewController, UITextFieldDelegate {
     }
     
     func didTapSaveButton(sender: UIBarButtonItem) {
+        navigationItem.rightBarButtonItem?.enabled = false
         if editTable != nil {
             editTable.clone(table)
             table = editTable
         }
         eventPlanner.saveTables([table]) { (tables) -> Void in
-            self.dismissViewControllerAnimated(true, completion: nil)
+            self.table.event.tables.appendContentsOf(tables)
+            if self.editTable == nil {
+                var newSeats = [Seat]()
+                for i in 1...self.table.seats {
+                    let seat = Seat()
+                    seat.number = i
+                    seat.table = self.table
+                    newSeats.append(seat)
+                }
+                self.eventPlanner.saveSeats(newSeats, completionHandler: { (seats) -> Void in
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                })
+            } else {
+                self.dismissViewControllerAnimated(true, completion: nil)
+            }
         }
     }
 

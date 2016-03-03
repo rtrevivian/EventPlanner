@@ -10,8 +10,6 @@ import UIKit
 
 class EventsTableViewController: UITableViewController {
     
-    // MARK: - Properties
-    
     lazy var eventPlanner: EventPlanner = {
         return EventPlanner.sharedInstance()
     }()
@@ -51,16 +49,7 @@ class EventsTableViewController: UITableViewController {
         
         navigationController?.navigationBarHidden = false
         navigationController?.toolbarHidden = false
-        refresh()
-    }
-    
-    // MARK: - Data management
-    
-    func refresh() {
-        eventPlanner.getEvents { (success) -> Void in
-            self.tableView.reloadData()
-            self.refreshControl?.endRefreshing()
-        }
+        reload()
     }
 
     // MARK: - Table view data source
@@ -111,6 +100,19 @@ class EventsTableViewController: UITableViewController {
         if !editing {
             performSegueWithIdentifier(segueEventDetail, sender: eventPlanner.events[indexPath.row])
         }
+    }
+    
+    // MARK: - Refresh
+    
+    func refresh() {
+        eventPlanner.getEvents { (success) -> Void in
+            self.reload()
+        }
+    }
+    
+    func reload() {
+        self.tableView.reloadData()
+        self.refreshControl?.endRefreshing()
     }
     
     // MARK: - Actions

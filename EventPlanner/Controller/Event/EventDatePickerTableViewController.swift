@@ -63,7 +63,7 @@ class EventDatePickerTableViewController: UITableViewController {
         }
     }
     
-    // MARK: - Functions
+    // MARK: - Actions
     
     func didChangeEnabledSwitch(sender: UISwitch) {
         enabled = sender.on
@@ -72,6 +72,8 @@ class EventDatePickerTableViewController: UITableViewController {
     func didChangeDatePicker(sender: UIDatePicker) {
         setDate(sender.date)
     }
+    
+    // MARK: - Helpers
     
     func setDate(date: NSDate?) {
         switch key {

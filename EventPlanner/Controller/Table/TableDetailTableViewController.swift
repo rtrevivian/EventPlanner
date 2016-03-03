@@ -13,7 +13,7 @@ class TableDetailTableViewController: UITableViewController {
     // MARK: - Enums
     
     enum Row: String {
-        case Seats
+        case Seats, Guests
     }
     
     // MARK: - Structs
@@ -56,36 +56,7 @@ class TableDetailTableViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        refresh()
-    }
-    
-    // MARK: - Data management
-    
-    func refresh() {
-        /*
-        eventPlanner.getGuest(guest) { (guest) -> Void in
-            self.guest = guest
-            self.getRows()
-        }
-        */
-        getRows()
-    }
-    
-    func getRows() {
-        title = table.name
-        
-        sections = [Section]()
-        
-        var basicRows = [Row]()
-        basicRows.append(.Seats)
-        if !basicRows.isEmpty {
-            var basic = Section(header: nil, footer: nil)
-            basic.rows = basicRows
-            sections.append(basic)
-        }
-        
-        tableView.reloadData()
-        refreshControl?.endRefreshing()
+        reload()
     }
     
     // MARK: - Table view data source
@@ -110,11 +81,16 @@ class TableDetailTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
         let row = getTableViewRow(indexPath)
         switch row {
+        case .Guests:
+            cell.textLabel?.text = "Guests"
+            cell.detailTextLabel?.text = table.assigned.description
+            break;
         case .Seats:
             cell.textLabel?.text = "Seats"
             cell.detailTextLabel?.text = table.seats.description
             break;
         }
+        
         return cell
     }
     
@@ -124,6 +100,33 @@ class TableDetailTableViewController: UITableViewController {
     
     func getTableViewRow(indexPath: NSIndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
+    }
+    
+    // MARK: - Refresh
+    
+    func refresh() {
+        eventPlanner.getTable(table) { (table) -> Void in
+            self.table = table
+            self.reload()
+        }
+    }
+    
+    func reload() {
+        title = table.name
+        
+        sections = [Section]()
+        
+        var basicRows = [Row]()
+        basicRows.append(.Seats)
+        basicRows.append(.Guests)
+        if !basicRows.isEmpty {
+            var basic = Section(header: nil, footer: nil)
+            basic.rows = basicRows
+            sections.append(basic)
+        }
+        
+        tableView.reloadData()
+        refreshControl?.endRefreshing()
     }
     
     // MARK: - Actions

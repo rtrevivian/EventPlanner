@@ -71,7 +71,7 @@ class EventDetailTableViewController: UITableViewController {
         super.viewWillAppear(animated)
         
         navigationController?.setToolbarHidden(true, animated: false)
-        refresh()
+        reload()
     }
     
     // MARK: - Data management
@@ -79,11 +79,11 @@ class EventDetailTableViewController: UITableViewController {
     func refresh() {
         eventPlanner.getEvent(event) { (event) -> Void in
             self.event = event
-            self.getRows()
+            self.reload()
         }
     }
     
-    func getRows() {
+    func reload() {
         title = event.name
         sections = [Section]()
         
