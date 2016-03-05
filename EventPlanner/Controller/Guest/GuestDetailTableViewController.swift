@@ -25,6 +25,8 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
         case Twitter
         case Facebook
         case Instagram
+        
+        case ActionDelete = "Delete"
     }
     
     // MARK: - Structs
@@ -51,7 +53,6 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
     let segueEventEdit = "segueGuestEdit"
     
     var guest: Guest!
-    
     var sections = [Section]()
     
     override func viewDidLoad() {
@@ -65,9 +66,9 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
-        navigationController?.setToolbarHidden(true, animated: false)
+
         reload()
+        navigationController?.setToolbarHidden(true, animated: false)
     }
     
     // MARK: - Table view data source
@@ -89,47 +90,65 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
+        
         let row = getTableViewRow(indexPath)
-        switch row {
-        case .Address:
-            cell.imageView?.image = UIImage(named: "location")
-            cell.textLabel?.text = guest.address
-            break;
-        case .Email:
-            cell.imageView?.image = UIImage(named: "message")
-            cell.textLabel?.text = guest.email
-            break;
-        case .Facebook:
-            cell.imageView?.image = UIImage(named: "facebook")
-            cell.textLabel?.text = guest.facebook
-            break;
-        case .Instagram:
-            cell.imageView?.image = UIImage(named: "instagram")
-            cell.textLabel?.text = guest.instagram
-            break;
-        case .Phone:
-            cell.imageView?.image = UIImage(named: "phone")
-            cell.textLabel?.text = guest.phone
-            break;
-        case .RSVP:
-            cell.textLabel?.text = "Hello"
-            break;
-        case .Twitter:
-            cell.imageView?.image = UIImage(named: "twitter")
-            cell.textLabel?.text = guest.twitter
-            break;
-        case .Website:
-            cell.imageView?.image = UIImage(named: "link")
-            cell.textLabel?.text = guest.website
-            break;
+        var returnCell: UITableViewCell
+        if row == .ActionDelete {
+            let cell = tableView.dequeueReusableCellWithIdentifier("labelCell", forIndexPath: indexPath) as! LabelTableViewCell
+            cell.label.textColor = UIColor.redColor()
+            cell.label.text = "Delete Guest"
+            returnCell = cell
+        } else {
+            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
+            returnCell = cell
+            switch row {
+            case .Address:
+                cell.imageView?.image = UIImage(named: "location")
+                cell.textLabel?.text = guest.address
+                break;
+            case .Email:
+                cell.imageView?.image = UIImage(named: "message")
+                cell.textLabel?.text = guest.email
+                break;
+            case .Facebook:
+                cell.imageView?.image = UIImage(named: "facebook")
+                cell.textLabel?.text = guest.facebook
+                break;
+            case .Instagram:
+                cell.imageView?.image = UIImage(named: "instagram")
+                cell.textLabel?.text = guest.instagram
+                break;
+            case .Phone:
+                cell.imageView?.image = UIImage(named: "phone")
+                cell.textLabel?.text = guest.phone
+                break;
+            case .RSVP:
+                cell.textLabel?.text = "RSVP"
+                cell.detailTextLabel?.text = guest.rsvpType?.name
+                break;
+            case .Twitter:
+                cell.imageView?.image = UIImage(named: "twitter")
+                cell.textLabel?.text = guest.twitter
+                break;
+            case .Website:
+                cell.imageView?.image = UIImage(named: "link")
+                cell.textLabel?.text = guest.website
+                break;
+            default:
+                break;
+            }
         }
-        return cell
+        return returnCell
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let row = getTableViewRow(indexPath)
         switch row {
+        case .ActionDelete:
+            guest.deleteSelf(nil, confirm: { () -> Void in
+                self.navigationController?.popViewControllerAnimated(true)
+            })
+            break;
         case .Address:
             openMaps(guest.address)
             break;
@@ -161,6 +180,8 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
         var highlight = true
         let row = getTableViewRow(indexPath)
         switch row {
+        case .ActionDelete:
+            break;
         case .Address:
             highlight = !guest.address.isEmpty
             break;
@@ -207,7 +228,7 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
         sections = [Section]()
         
         var basicRows = [Row]()
-        if !guest.rsvp.isEmpty {
+        if let _ = guest.rsvpType {
             basicRows.append(.RSVP)
         }
         if !basicRows.isEmpty {
@@ -250,6 +271,13 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
             social.rows = socialRows
             sections.append(social)
         }
+        
+        var actionRows = [Row]()
+        actionRows.append(.ActionDelete)
+        var actions = Section(header: nil, footer: nil)
+        actions.rows = actionRows
+        self.sections.append(actions)
+        
         tableView.reloadData()
         refreshControl?.endRefreshing()
     }

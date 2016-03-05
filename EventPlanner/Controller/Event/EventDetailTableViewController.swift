@@ -13,24 +13,30 @@ class EventDetailTableViewController: UITableViewController {
     // MARK: - Enums
     
     enum Row: String {
-        case Type
-        case DressCode = "Dress code"
+        case BasicDressCode = "Dress code"
+        case BasicGuests = "Guests"
+        case BasicRSVPs = "RSVPs"
+        case BasicType = "Type"
         
         // When
-        case Start
-        case End
-        case RSVP
+        case WhenStart = "Start"
+        case WhenEnd = "End"
+        case WhenRSVP = "RSVP"
         
         // Venue
-        case Address
-        case Phone
-        case Email
-        case Website
+        case VenueAddress = "Address"
+        case VenuePhone = "Phone"
+        case VenueEmail = "Email"
+        case VenueWebsite = "Website"
         
         // Social
-        case Twitter
-        case Facebook
-        case Instagram
+        case SocialTwitter = "Twitter"
+        case SocialFacebook = "Facebook"
+        case SocialInstagram = "Instagram"
+        
+        // Actions
+        case ActionEmpty = "Empty"
+        case ActionDelete = "Delete"
     }
     
     // MARK: - Structs
@@ -53,6 +59,7 @@ class EventDetailTableViewController: UITableViewController {
     }()
     
     let segueEventEdit = "segueEventEdit"
+    
     var event: Event!
     var sections = [Section]()
     
@@ -84,74 +91,84 @@ class EventDetailTableViewController: UITableViewController {
     }
     
     func reload() {
-        title = event.name
-        sections = [Section]()
-        
-        var basicRows = [Row]()
-        if let _ = event.eventType {
-            basicRows.append(.Type)
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            self.title = self.event.name
+            self.sections = [Section]()
+            
+            var basicRows = [Row]()
+            if let _ = self.event.eventType {
+                basicRows.append(.BasicType)
+            }
+            if let _ = self.event.dressCode {
+                basicRows.append(.BasicDressCode)
+            }
+            if !basicRows.isEmpty {
+                var basic = Section(header: nil, footer: nil)
+                basic.rows = basicRows
+                self.sections.append(basic)
+            }
+            
+            var whenRows = [Row]()
+            if let _ = self.event.startDate {
+                whenRows.append(.WhenStart)
+            }
+            if let _ = self.event.endDate {
+                whenRows.append(.WhenEnd)
+            }
+            if let _ = self.event.rsvpDate {
+                whenRows.append(.WhenRSVP)
+            }
+            if !whenRows.isEmpty {
+                var when = Section(header: "When", footer: nil)
+                when.rows = whenRows
+                self.sections.append(when)
+            }
+            
+            var venueRows = [Row]()
+            if !self.event.address.isEmpty {
+                venueRows.append(.VenueAddress)
+            }
+            if !self.event.phone.isEmpty {
+                venueRows.append(.VenuePhone)
+            }
+            if !self.event.email.isEmpty {
+                venueRows.append(.VenueEmail)
+            }
+            if !self.event.website.isEmpty {
+                venueRows.append(.VenueWebsite)
+            }
+            if !venueRows.isEmpty {
+                var venue = Section(header: "Venue", footer: nil)
+                venue.rows = venueRows
+                self.sections.append(venue)
+            }
+            
+            var socialRows = [Row]()
+            if !self.event.twitter.isEmpty {
+                socialRows.append(.SocialTwitter)
+            }
+            if !self.event.facebook.isEmpty {
+                socialRows.append(.SocialFacebook)
+            }
+            if !self.event.instagram.isEmpty {
+                socialRows.append(.SocialInstagram)
+            }
+            if !socialRows.isEmpty {
+                var social = Section(header: "Social", footer: nil)
+                social.rows = socialRows
+                self.sections.append(social)
+            }
+            
+            var actionRows = [Row]()
+            actionRows.append(.ActionEmpty)
+            actionRows.append(.ActionDelete)
+            var actions = Section(header: nil, footer: nil)
+            actions.rows = actionRows
+            self.sections.append(actions)
+            
+            self.tableView.reloadData()
+            self.refreshControl?.endRefreshing()
         }
-        if let _ = event.dressCode {
-            basicRows.append(.DressCode)
-        }
-        if !basicRows.isEmpty {
-            var basic = Section(header: nil, footer: nil)
-            basic.rows = basicRows
-            sections.append(basic)
-        }
-        
-        var whenRows = [Row]()
-        if let _ = event.startDate {
-            whenRows.append(.Start)
-        }
-        if let _ = event.endDate {
-            whenRows.append(.End)
-        }
-        if let _ = event.rsvpDate {
-            whenRows.append(.RSVP)
-        }
-        if !whenRows.isEmpty {
-            var when = Section(header: "When", footer: nil)
-            when.rows = whenRows
-            sections.append(when)
-        }
-        
-        var venueRows = [Row]()
-        if !event.address.isEmpty {
-            venueRows.append(.Address)
-        }
-        if !event.phone.isEmpty {
-            venueRows.append(.Phone)
-        }
-        if !event.email.isEmpty {
-            venueRows.append(.Email)
-        }
-        if !event.website.isEmpty {
-            venueRows.append(.Website)
-        }
-        if !venueRows.isEmpty {
-            var venue = Section(header: "Venue", footer: nil)
-            venue.rows = venueRows
-            sections.append(venue)
-        }
-        
-        var socialRows = [Row]()
-        if !event.twitter.isEmpty {
-            socialRows.append(.Twitter)
-        }
-        if !event.facebook.isEmpty {
-            socialRows.append(.Facebook)
-        }
-        if !event.instagram.isEmpty {
-            socialRows.append(.Instagram)
-        }
-        if !socialRows.isEmpty {
-            var social = Section(header: "Social", footer: nil)
-            social.rows = socialRows
-            sections.append(social)
-        }
-        tableView.reloadData()
-        refreshControl?.endRefreshing()
     }
 
     // MARK: - Table view data source
@@ -173,138 +190,176 @@ class EventDetailTableViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
         let row = getTableViewRow(indexPath)
-        switch row {
-        case .Address:
-            cell.imageView?.image = UIImage(named: "location")
-            cell.textLabel?.text = event.address
-            break;
-        case .DressCode:
-            cell.textLabel?.text = row.rawValue
-            cell.detailTextLabel?.text = event.dressCode?.name
-            break;
-        case .Email:
-            cell.imageView?.image = UIImage(named: "message")
-            cell.textLabel?.text = event.email
-            break;
-        case .End:
-            cell.textLabel?.text = row.rawValue
-            cell.detailTextLabel?.text = event.end
-            break;
-        case .Facebook:
-            cell.imageView?.image = UIImage(named: "facebook")
-            cell.textLabel?.text = event.facebook
-            break;
-        case .Instagram:
-            cell.imageView?.image = UIImage(named: "instagram")
-            cell.textLabel?.text = event.instagram
-            break;
-        case .Phone:
-            cell.imageView?.image = UIImage(named: "phone")
-            cell.textLabel?.text = event.phone
-            break;
-        case .RSVP:
-            cell.textLabel?.text = row.rawValue
-            cell.detailTextLabel?.text = event.rsvp
-            break;
-        case .Start:
-            cell.textLabel?.text = row.rawValue
-            cell.detailTextLabel?.text = event.start
-            break;
-        case .Twitter:
-            cell.imageView?.image = UIImage(named: "twitter")
-            cell.textLabel?.text = event.twitter
-            break;
-        case .Type:
-            cell.textLabel?.text = row.rawValue
-            cell.detailTextLabel?.text = event.eventType?.name
-            break;
-        case .Website:
-            cell.imageView?.image = UIImage(named: "link")
-            cell.textLabel?.text = event.website
-            break;
+        var returnCell: UITableViewCell
+        if row == .ActionDelete || row == .ActionEmpty {
+            let cell = tableView.dequeueReusableCellWithIdentifier("labelCell", forIndexPath: indexPath) as! LabelTableViewCell
+            cell.label.textColor = row == .ActionDelete ? UIColor.redColor() : Colors.purple
+            cell.label.text = row == .ActionDelete ? "Delete Event" : "Remove Guests"
+            returnCell = cell
+        } else {
+            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
+            returnCell = cell
+            switch row {
+            case .BasicDressCode:
+                cell.textLabel?.text = row.rawValue
+                cell.detailTextLabel?.text = event.dressCode?.name
+                break;
+            case .BasicGuests:
+                cell.textLabel?.text = row.rawValue
+                cell.detailTextLabel?.text = event.guests.count.description
+                break;
+            case .BasicType:
+                cell.textLabel?.text = row.rawValue
+                cell.detailTextLabel?.text = event.eventType?.name
+                break;
+            case .BasicRSVPs:
+                cell.textLabel?.text = row.rawValue
+                cell.detailTextLabel?.text = event.rsvps.count.description
+                break;
+            case .SocialFacebook:
+                cell.imageView?.image = UIImage(named: "facebook")
+                cell.textLabel?.text = event.facebook
+                break;
+            case .SocialInstagram:
+                cell.imageView?.image = UIImage(named: "instagram")
+                cell.textLabel?.text = event.instagram
+                break;
+            case .SocialTwitter:
+                cell.imageView?.image = UIImage(named: "twitter")
+                cell.textLabel?.text = event.twitter
+                break;
+            case .VenueAddress:
+                cell.imageView?.image = UIImage(named: "location")
+                cell.textLabel?.text = event.address
+                break;
+            case .VenueEmail:
+                cell.imageView?.image = UIImage(named: "message")
+                cell.textLabel?.text = event.email
+                break;
+            case .VenuePhone:
+                cell.imageView?.image = UIImage(named: "phone")
+                cell.textLabel?.text = event.phone
+                break;
+            case .VenueWebsite:
+                cell.imageView?.image = UIImage(named: "link")
+                cell.textLabel?.text = event.website
+                break;
+            case .WhenEnd:
+                cell.textLabel?.text = row.rawValue
+                cell.detailTextLabel?.text = event.end
+                break;
+            case .WhenRSVP:
+                cell.textLabel?.text = row.rawValue
+                cell.detailTextLabel?.text = event.rsvp
+                break;
+            case .WhenStart:
+                cell.textLabel?.text = row.rawValue
+                cell.detailTextLabel?.text = event.start
+                break;
+            default:
+                break;
+            }
         }
-        return cell
+        return returnCell
     }
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let row = getTableViewRow(indexPath)
         switch row {
-        case .Address:
-            openMaps(event.address)
+        case .ActionDelete:
+            let alert = event.deleteSelf(nil, confirm: { () -> Void in
+                self.navigationController?.popViewControllerAnimated(true)
+            })
+            self.presentViewController(alert, animated: true, completion: nil)
             break;
-        case .DressCode:
+        case .ActionEmpty:
+            let alert = event.empty(nil, confirm: nil)
+            self.presentViewController(alert, animated: true, completion: nil)
             break;
-        case .Email:
-            openEmail(event.email)
+        case .BasicDressCode:
             break;
-        case .End:
+        case .BasicGuests:
             break;
-        case .Facebook:
+        case .BasicType:
+            break;
+        case .BasicRSVPs:
+            break;
+        case .SocialFacebook:
             openFacebookPage(event.facebook)
             break;
-        case .Instagram:
+        case .SocialInstagram:
             openInstagramWithHastag(event.instagram)
             break;
-        case .Phone:
-            openPhone(event.phone)
-            break;
-        case .RSVP:
-            break;
-        case .Start:
-            break;
-        case .Twitter:
+        case .SocialTwitter:
             openTwitterWithHashtag(event.twitter)
             break;
-        case .Type:
+        case .VenueAddress:
+            openMaps(event.address)
             break;
-        case .Website:
+        case .VenueEmail:
+            openEmail(event.email)
+            break;
+        case .VenuePhone:
+            openPhone(event.phone)
+            break;
+        case .VenueWebsite:
             openURL(event.website)
+            break;
+        case .WhenEnd:
+            break;
+        case .WhenRSVP:
+            break;
+        case .WhenStart:
             break;
         }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
 
     override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        var highlight = true
+        var highlight = false
         let row = getTableViewRow(indexPath)
         switch row {
-        case .Address:
-            highlight = !event.address.isEmpty
+        case .ActionDelete:
+            highlight = true
             break;
-        case .DressCode:
-            highlight = false
+        case .ActionEmpty:
+            highlight = true
             break;
-        case .Email:
-            highlight = !event.email.isEmpty
+        case .BasicDressCode:
             break;
-        case .End:
-            highlight = false
+        case .BasicGuests:
             break;
-        case .Facebook:
+        case .BasicType:
+            break;
+        case .BasicRSVPs:
+            break;
+        case .SocialFacebook:
             highlight = !event.facebook.isEmpty
             break;
-        case .Instagram:
+        case .SocialInstagram:
             highlight = !event.instagram.isEmpty
             break;
-        case .Phone:
-            highlight = !event.phone.isEmpty
-            break;
-        case .RSVP:
-            highlight = false
-            break;
-        case .Start:
-            highlight = false
-            break;
-        case .Twitter:
+        case .SocialTwitter:
             highlight = !event.twitter.isEmpty
             break;
-        case .Type:
-            highlight = false
+        case .VenueAddress:
+            highlight = !event.address.isEmpty
             break;
-        case .Website:
+        case .VenueEmail:
+            highlight = !event.email.isEmpty
+            break;
+        case .WhenEnd:
+            break;
+        case .VenuePhone:
+            highlight = !event.phone.isEmpty
+            break;
+        case .VenueWebsite:
             highlight = !event.website.isEmpty
+            break;
+        case .WhenRSVP:
+            break;
+        case .WhenStart:
             break;
         }
         return highlight

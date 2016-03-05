@@ -10,17 +10,14 @@ import Foundation
 
 class DressCode: NSObject {
     
-    var entityId: String? //Kinvey entity _id
-    var metadata: KCSMetadata? //Kinvey metadata, optional
-    
+    var entityId: String?
     var name = String()
     
     // MARK: - Kinvey
     
     override func hostToKinveyPropertyMapping() -> [NSObject : AnyObject]! {
         return [
-            "entityId" : KCSEntityKeyId, //the required _id field
-            "metadata" : KCSEntityKeyMetadata, //optional _metadata field
+            "entityId" : KCSEntityKeyId,
             "name" : "name"
         ]
     }

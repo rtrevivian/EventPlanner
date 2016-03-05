@@ -13,10 +13,11 @@ class GuestEditTableViewController: UITableViewController, UITextFieldDelegate {
     // MARK: - Outlet textfields
     
     @IBOutlet weak var nameTextField: UITextField!
+    @IBOutlet weak var rsvpTextField: UITextField!
     
     @IBOutlet weak var addressTextField: UITextField!
-    @IBOutlet weak var phoneTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
+    @IBOutlet weak var phoneTextField: UITextField!
     @IBOutlet weak var websiteTextField: UITextField!
     
     @IBOutlet weak var twitterTextField: UITextField!
@@ -25,31 +26,32 @@ class GuestEditTableViewController: UITableViewController, UITextFieldDelegate {
     
     // MARK: - Outlet cells
     
-    @IBOutlet weak var twitterCell: UITableViewCell!
-    @IBOutlet weak var facebookCell: UITableViewCell!
-    @IBOutlet weak var instagramCell: UITableViewCell!
-    
+    @IBOutlet weak var rsvpCell: UITableViewCell!
+
     // MARK: - Properties
     
     lazy var eventPlanner: EventPlanner = {
         return EventPlanner.sharedInstance()
     }()
 
+    let segueGuestSelect = "segueGuestSelect"
+    
     var event: Event!
     var editGuest: Guest!
     var guest: Guest!
+    var textFields: [UITextField]!
     
     // MARK: - View
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let textFields: [UITextField] = [
+        textFields = [
             nameTextField,
+            emailTextField,
             
             addressTextField,
             phoneTextField,
-            emailTextField,
             websiteTextField,
             
             twitterTextField,
@@ -76,12 +78,14 @@ class GuestEditTableViewController: UITableViewController, UITextFieldDelegate {
         super.viewWillAppear(animated)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "notificationGuestChanged", name: Guest.Change.GuestChanged.rawValue, object: nil)
+        notificationGuestChanged()
         
         nameTextField.text = guest.name
+        rsvpTextField.text = guest.rsvpType?.name
         
         addressTextField.text = guest.address
-        phoneTextField.text = guest.phone
         emailTextField.text = guest.email
+        phoneTextField.text = guest.phone
         websiteTextField.text = guest.website
         
         twitterTextField.text = guest.twitter
@@ -93,12 +97,20 @@ class GuestEditTableViewController: UITableViewController, UITextFieldDelegate {
         super.viewWillDisappear(animated)
         
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        hideKeyboard()
     }
     
     // MARK: Table view delegate
     
     override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return false
+        return tableView.cellForRowAtIndexPath(indexPath) == rsvpCell
+    }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let cell = tableView.cellForRowAtIndexPath(indexPath)
+        if cell == rsvpCell {
+            performSegueWithIdentifier(segueGuestSelect, sender: self)
+        }
     }
     
     // MARK: - Text field delegate
@@ -109,6 +121,9 @@ class GuestEditTableViewController: UITableViewController, UITextFieldDelegate {
             switch textField {
             case nameTextField:
                 guest.name = newValue
+                break;
+            case emailTextField:
+                guest.email = newValue
                 break;
             case facebookTextField:
                 guest.facebook = newValue
@@ -121,9 +136,6 @@ class GuestEditTableViewController: UITableViewController, UITextFieldDelegate {
                 break;
             case addressTextField:
                 guest.address = newValue
-                break;
-            case emailTextField:
-                guest.email = newValue
                 break;
             case phoneTextField:
                 guest.phone = newValue
@@ -175,6 +187,16 @@ class GuestEditTableViewController: UITableViewController, UITextFieldDelegate {
         return true
     }
     
+    // MARK: - Helpers
+    
+    func hideKeyboard() {
+        for textField in textFields {
+            if textField.isFirstResponder() {
+                textField.resignFirstResponder()
+            }
+        }
+    }
+    
     // MARK: - Actions
     
     func didTapCancelButton(sender: UIBarButtonItem) {
@@ -185,7 +207,6 @@ class GuestEditTableViewController: UITableViewController, UITextFieldDelegate {
         eventPlanner.saveGuests([guest]) { (guests) -> Void in
             if self.editGuest != nil {
                 self.editGuest.clone(guests[0])
-                
             } else {
                 self.event.guests.appendContentsOf(guests)
             }
@@ -195,6 +216,14 @@ class GuestEditTableViewController: UITableViewController, UITextFieldDelegate {
     
     func notificationGuestChanged() {
         navigationItem.rightBarButtonItem?.enabled = !guest.name.isEmpty
+    }
+    
+    // MARK: - Navigation
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if let controller = segue.destinationViewController as? GuestSelectTableViewController {
+            controller.guest = guest
+        }
     }
     
 }

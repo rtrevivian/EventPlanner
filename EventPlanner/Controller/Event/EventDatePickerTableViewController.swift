@@ -20,11 +20,9 @@ class EventDatePickerTableViewController: UITableViewController {
     // MARK: - Properties
     
     struct Keys {
-        
         static let start = "Start"
         static let end = "End"
         static let rsvp = "RSVP"
-        
     }
     
     var enabled = false {

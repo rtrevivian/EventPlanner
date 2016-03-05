@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreData
 
 class EventPlanner {
     
@@ -16,6 +17,10 @@ class EventPlanner {
         }
         return Static.instance
     }
+    
+    lazy var sharedContext: NSManagedObjectContext = {
+        return CoreDataStackManager.sharedInstance().managedObjectContext
+    }()
     
     let dressCodesStore = KCSLinkedAppdataStore.storeWithOptions([
         KCSStoreKeyCollectionName : "DressCodes",
@@ -42,17 +47,6 @@ class EventPlanner {
         KCSStoreKeyCollectionTemplateClass : RSVPType.self
         ])
     
-    let seatsStore = KCSLinkedAppdataStore.storeWithOptions([
-        KCSStoreKeyCollectionName : "Seats",
-        KCSStoreKeyCollectionTemplateClass : Seat.self
-        ])
-    
-    let tablesStore = KCSLinkedAppdataStore.storeWithOptions([
-        KCSStoreKeyCollectionName : "Tables",
-        KCSStoreKeyCollectionTemplateClass : Table.self
-        ])
-
-    
     // MARK: - Static data sources
     
     var dressCodes = [DressCode]()
@@ -61,74 +55,128 @@ class EventPlanner {
     
     // MARK: - Dynamic data sources
     
+    var user: User?
     var events = [Event]()
     
-    func start() {
+    func start(completionHandler: ((Bool) -> Void)?) {
         KCSClient.sharedClient().initializeKinveyServiceForAppKey(
             "kid_-y4qiUCFRl",
             withAppSecret: "42d1c89bd3c941088b44f571025a5856",
             usingOptions: nil
         )
         KCSPing.pingKinveyWithBlock { (result: KCSPingResult!) -> Void in
-            if result.pingWasSuccessful {
-                self.getDressCodes()
-                self.getEventTypes()
-                self.getRSVPTypes()
-            } else {
-                print("pingKinveyWithBlock failed")
-            }
+            completionHandler?(result.pingWasSuccessful)
         }
     }
     
     // MARK: - User
     
-    func login(username: String, password: String, completionHandler: ((Bool, AnyObject) -> Void)?) {
+    func login(username: String, password: String, completionHandler: ((Bool, AnyObject?) -> Void)?) {
         KCSUser.loginWithUsername(username, password: password) { (user, error, result) -> Void in
             guard error == nil else {
                 print("login error:", error.localizedDescription)
                 completionHandler?(false, error.localizedDescription)
                 return
             }
-            completionHandler?(true, user)
+            let _ = User(dictionary: [User.Keys.Username: username, User.Keys.Password: password], context: CoreDataStackManager.sharedInstance().managedObjectContext)
+            do {
+                try CoreDataStackManager.sharedInstance().managedObjectContext.save()
+            } catch {
+                print("Error saving user:", error)
+            }
+            self.getEventTypes { (success, eventTypes) -> Void in
+                if success {
+                    self.eventTypes = eventTypes!
+                    self.getDressCodes({ (success, dressCodes) -> Void in
+                        if success {
+                            self.dressCodes = dressCodes!
+                            self.getRSVPTypes({ (success, rsvpTypes) -> Void in
+                                if success {
+                                    self.rsvpTypes = rsvpTypes!
+                                    completionHandler?(true, nil)
+                                } else {
+                                    completionHandler?(false, "Unable to load RSVP types")
+                                }
+                            })
+                        } else {
+                            completionHandler?(false, "Unable to load dress codes")
+                        }
+                    })
+                } else {
+                    completionHandler?(false, "Unable to load event types")
+                }
+            }
         }
+        
     }
     
-    func logout() {
+    func logout(completionHandler: ((Bool) -> Void)?) {
         if KCSUser.activeUser() != nil {
             KCSUser.activeUser().logout()
             events.removeAll()
         }
+        deleteUsers()
+    }
+    
+    func fetchUsers(completionHandler: (() -> Void)?) -> [User] {
+        let fetchRequest = NSFetchRequest(entityName: "User")
+        var results = [AnyObject]()
+        do {
+            results = try self.sharedContext.executeFetchRequest(fetchRequest)
+        } catch {
+            print("Error fetching users:", error)
+        }
+        let users = results as! [User]
+        user = users.isEmpty ? nil : users[0]
+        completionHandler?()
+        return users
+    }
+    
+    func deleteUsers() {
+        for user in fetchUsers(nil) {
+            user.deleteUser()
+        }
+        user = nil
     }
     
     // MARK: - Static data types
     
-    func getDressCodes() {
+    func getDressCodes(completionHandler: ((Bool, [DressCode]?) -> Void)?) {
         dressCodesStore.queryWithQuery(KCSQuery(), withCompletionBlock: { (objects, error) -> Void in
             guard error == nil else {
                 print("getDressCodes error:", error)
+                completionHandler?(false, nil)
                 return
             }
-            self.dressCodes = objects as! [DressCode]
+            completionHandler?(true, objects as? [DressCode])
             }, withProgressBlock: nil)
     }
     
-    func getEventTypes() {
-        eventTypesStore.queryWithQuery(KCSQuery(), withCompletionBlock: { (objects, error) -> Void in
+    func getEventTypes(completionHandler: ((Bool, [EventType]?) -> Void)?) {
+        let query = KCSQuery()
+        let dataSort = KCSQuerySortModifier(field: "name", inDirection: KCSSortDirection.Ascending)
+        query.addSortModifier(dataSort)
+        eventTypesStore.queryWithQuery(query, withCompletionBlock: { (objects, error) -> Void in
             guard error == nil else {
                 print("getEventTypes error:", error)
+                completionHandler?(false, nil)
                 return
             }
-            self.eventTypes = objects as! [EventType]
+            completionHandler?(true, objects as? [EventType])
             }, withProgressBlock: nil)
     }
     
-    func getRSVPTypes() {
-        rsvpTypesStore.queryWithQuery(KCSQuery(), withCompletionBlock: { (objects, error) -> Void in
+    func getRSVPTypes(completionHandler: ((Bool, [RSVPType]?) -> Void)?) {
+        let query = KCSQuery()
+        let dataSort = KCSQuerySortModifier(field: "name", inDirection: KCSSortDirection.Ascending)
+        query.addSortModifier(dataSort)
+        rsvpTypesStore.queryWithQuery(query, withCompletionBlock: { (objects, error) -> Void in
             guard error == nil else {
                 print("getRSVPTypes error:", error)
+                completionHandler?(false, nil)
                 return
             }
-            self.rsvpTypes = objects as! [RSVPType]
+            completionHandler?(true, objects as? [RSVPType])
             }, withProgressBlock: nil)
     }
     
@@ -137,7 +185,6 @@ class EventPlanner {
     func deleteEvents(events: [Event], completionHandler: ((Bool) -> Void)?) {
         for event in events {
             deleteGuests(event.guests, completionHandler: nil)
-            deleteTables(event.tables, completionHandler: nil)
         }
         eventsStore.removeObject(events, withDeletionBlock: { (objects, error) -> Void in
             guard error == nil else {
@@ -189,15 +236,14 @@ class EventPlanner {
             }, withProgressBlock: nil)
     }
     
-    func saveEvents(events: [Event], completionHandler: ((Bool) -> Void)?) {
+    func saveEvents(events: [Event], completionHandler: (([Event]) -> Void)?) {
         eventsStore.saveObject(events, withCompletionBlock: { (objects, error) -> Void in
             guard error == nil else {
                 print("saveEvents error:", error)
-                completionHandler?(false)
+                completionHandler?([])
                 return
             }
-            self.events += objects as! [Event]
-            completionHandler?(true)
+            completionHandler?(objects as! [Event])
             }, withProgressBlock: nil)
     }
     
@@ -246,102 +292,6 @@ class EventPlanner {
                 return
             }
             completionHandler?(objects as! [Guest])
-            }, withProgressBlock: nil)
-    }
-    
-    // MARK: - Table
-    
-    func deleteTables(tables: [Table], completionHandler: ((Bool) -> Void)?) {
-        tablesStore.removeObject(tables, withDeletionBlock: { (objects, error) -> Void in
-            guard error == nil else {
-                print("deleteTables error:", error)
-                completionHandler?(false)
-                return
-            }
-            completionHandler?(true)
-            }, withProgressBlock: nil)
-    }
-    
-    func getTable(table: Table, completionHandler: ((Table?) -> Void)?) {
-        let query = KCSQuery(onField: "_id", withExactMatchForValue: table.entityId)
-        tablesStore.queryWithQuery(query, withCompletionBlock: { (objects, error) -> Void in
-            guard error == nil else {
-                print("getGuest error:", error)
-                completionHandler?(nil)
-                return
-            }
-            completionHandler?(objects[0] as? Table)
-            }, withProgressBlock: nil)
-    }
-    
-    func getTables(event: Event, completionHandler: (([Table]) -> Void)?) {
-        let query = KCSQuery(onField: "event._id", withExactMatchForValue: event.entityId)
-        tablesStore.queryWithQuery(query, withCompletionBlock: { (objects, error) -> Void in
-            guard error == nil else {
-                print("getTables error:", error)
-                completionHandler?([])
-                return
-            }
-            completionHandler?(objects as! [Table])
-            }, withProgressBlock: nil)
-    }
-    
-    func saveTables(tables: [Table], completionHandler: (([Table]) -> Void)?) {
-        tablesStore.saveObject(tables, withCompletionBlock: { (objects, error) -> Void in
-            guard error == nil else {
-                print("saveTables error:", error)
-                completionHandler?([])
-                return
-            }
-            completionHandler?(objects as! [Table])
-            }, withProgressBlock: nil)
-    }
-    
-    // MARK: - Seats
-    
-    func deleteSeats(seats: [Seat], completionHandler: ((Bool) -> Void)?) {
-        seatsStore.removeObject(seats, withDeletionBlock: { (objects, error) -> Void in
-            guard error == nil else {
-                print("deleteSeats error:", error)
-                completionHandler?(false)
-                return
-            }
-            completionHandler?(true)
-            }, withProgressBlock: nil)
-    }
-    
-    func getSeat(seat: Seat, completionHandler: ((Seat?) -> Void)?) {
-        let query = KCSQuery(onField: "_id", withExactMatchForValue: seat.entityId)
-        seatsStore.queryWithQuery(query, withCompletionBlock: { (objects, error) -> Void in
-            guard error == nil else {
-                print("getSeat error:", error)
-                completionHandler?(nil)
-                return
-            }
-            completionHandler?(objects[0] as? Seat)
-            }, withProgressBlock: nil)
-    }
-    
-    func getSeats(event: Event, completionHandler: (([Seat]) -> Void)?) {
-        let query = KCSQuery(onField: "event._id", withExactMatchForValue: event.entityId)
-        seatsStore.queryWithQuery(query, withCompletionBlock: { (objects, error) -> Void in
-            guard error == nil else {
-                print("getSeats error:", error)
-                completionHandler?([])
-                return
-            }
-            completionHandler?(objects as! [Seat])
-            }, withProgressBlock: nil)
-    }
-    
-    func saveSeats(seats: [Seat], completionHandler: (([Seat]) -> Void)?) {
-        seatsStore.saveObject(seats, withCompletionBlock: { (objects, error) -> Void in
-            guard error == nil else {
-                print("saveSeats error:", error)
-                completionHandler?([])
-                return
-            }
-            completionHandler?(objects as! [Seat])
             }, withProgressBlock: nil)
     }
     

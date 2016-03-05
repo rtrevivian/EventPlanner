@@ -13,23 +13,11 @@ class EventsTableViewController: UITableViewController {
     lazy var eventPlanner: EventPlanner = {
         return EventPlanner.sharedInstance()
     }()
-    
-    lazy var logoutButton: UIBarButtonItem = {
-        return UIBarButtonItem(title: "Logout", style: .Done, target: self, action: "didTapLogoutButton:")
-    }()
-    
-    lazy var addButton: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "didTapAddButton:")
-    }()
-    
-    lazy var flexibleSpace: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: self, action: nil)
-    }()
+
+    let segueEventDetail = "segueEventDetail"
+    let segueGuests = "segueGuests"
     
     var swipedIndexPath: NSIndexPath!
-    
-    let segueEventDetail = "segueEventDetail"
-    let segueEventTabs = "segueEventTabs"
     
     // MARK: - View
 
@@ -39,9 +27,10 @@ class EventsTableViewController: UITableViewController {
         refreshControl = UIRefreshControl()
         refreshControl!.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
         
-        navigationItem.leftBarButtonItem = logoutButton
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .Done, target: self, action: "didTapLogoutButton:")
         navigationItem.rightBarButtonItem = editButtonItem()
-        setToolbarItems([flexibleSpace, addButton], animated: true)
+        
+        setToolbarItems([getFlexibleSpace(), UIBarButtonItem(title: "New Event", style: .Plain, target: self, action: "didTapNewButton:"), getFlexibleSpace()], animated: true)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -49,6 +38,7 @@ class EventsTableViewController: UITableViewController {
         
         navigationController?.navigationBarHidden = false
         navigationController?.toolbarHidden = false
+
         reload()
     }
 
@@ -68,31 +58,41 @@ class EventsTableViewController: UITableViewController {
         cell.textLabel?.text = event.name
         return cell
     }
+    
+    override func tableView(tableView: UITableView, didEndEditingRowAtIndexPath indexPath: NSIndexPath) {
+        super.tableView(tableView, didEndEditingRowAtIndexPath: indexPath)
+        swipedIndexPath = nil
+    }
+    
+    override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+        let delete = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: "Delete") { (action, indexPath) -> Void in
+            let alert = self.eventPlanner.events[indexPath.row].deleteSelf({ () -> Void in
+                self.editing = false
+                }, confirm: { () -> Void in
+                    self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+            })
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+        let empty = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Empty") { (action, indexPath) -> Void in
+            let alert = self.eventPlanner.events[indexPath.row].empty({ () -> Void in
+                    self.editing = false
+                }, confirm: { () -> Void in
+                    self.editing = false
+            })
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+        empty.backgroundColor = Colors.purple
+        return [delete, empty]
+    }
 
     override func tableView(tableView: UITableView, willBeginEditingRowAtIndexPath indexPath: NSIndexPath) {
         super.tableView(tableView, willBeginEditingRowAtIndexPath: indexPath)
         swipedIndexPath = indexPath
     }
     
-    override func tableView(tableView: UITableView, didEndEditingRowAtIndexPath indexPath: NSIndexPath) {
-        super.tableView(tableView, didEndEditingRowAtIndexPath: indexPath)
-        swipedIndexPath = nil
-    }
-
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            eventPlanner.deleteEvents([eventPlanner.events[indexPath.row]], completionHandler: { (success) -> Void in
-                if success {
-                    self.eventPlanner.events.removeAtIndex(indexPath.row)
-                    self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-                }
-            })
-        }
-    }
-    
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if !editing {
-            performSegueWithIdentifier(segueEventTabs, sender: eventPlanner.events[indexPath.row])
+            performSegueWithIdentifier(segueGuests, sender: eventPlanner.events[indexPath.row])
         }
     }
     
@@ -111,13 +111,19 @@ class EventsTableViewController: UITableViewController {
     }
     
     func reload() {
-        self.tableView.reloadData()
-        self.refreshControl?.endRefreshing()
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            self.tableView.reloadData()
+        }
+        if let _ = refreshControl {
+            if refreshControl!.refreshing {
+                self.refreshControl?.endRefreshing()
+            }
+        }
     }
     
     // MARK: - Actions
     
-    func didTapAddButton(sender: UIBarButtonItem) {
+    func didTapNewButton(sender: UIBarButtonItem) {
         if let navigator = storyboard?.instantiateViewControllerWithIdentifier("eventEditNavigator") as? UINavigationController {
             if let controller = navigator.viewControllers[0] as? EventEditTableViewController {
                 controller.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: controller, action: "didTapCancelButton:")
@@ -128,7 +134,7 @@ class EventsTableViewController: UITableViewController {
     }
     
     func didTapLogoutButton(sender: UIBarButtonItem) {
-        eventPlanner.logout()
+        eventPlanner.logout(nil)
         navigationController?.popToRootViewControllerAnimated(true)
     }
 
@@ -136,7 +142,7 @@ class EventsTableViewController: UITableViewController {
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if let event = sender as? Event {
-            if let controller = segue.destinationViewController as? EventTabsTableViewController {
+            if let controller = segue.destinationViewController as? GuestsTableViewController {
                 controller.event = event
             } else if let controller = segue.destinationViewController as? EventDetailTableViewController {
                 controller.event = event

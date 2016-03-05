@@ -53,11 +53,11 @@ class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
         return EventPlanner.sharedInstance()
     }()
     
+    let segueEventSelect = "segueEventSelect"
+    let segueEventDate = "segueEventDate"
+    
     var editEvent: Event!
     var event: Event!
-    
-    let segueSelect = "segueSelect"
-    let segueDate = "segueDate"
     
     var endCellEnabled = false {
         didSet {
@@ -66,12 +66,14 @@ class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
         }
     }
     
+    var textFields: [UITextField]!
+    
     // MARK: - View
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-       let textFields: [UITextField] = [
+       textFields = [
             nameTextField,
             venueAddressTextField,
             venuePhoneTextField,
@@ -126,6 +128,7 @@ class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
         super.viewWillDisappear(animated)
         
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        hideKeyboard()
     }
     
     // MARK: Table view delegate
@@ -151,6 +154,7 @@ class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
             break;
         }
         if let _ = title {
+            hideKeyboard()
             presentSimpleAlert(title, message: message)
         }
     }
@@ -170,19 +174,19 @@ class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
         
         switch cell! {
         case typeCell:
-            performSegueWithIdentifier(segueSelect, sender: typeCell)
+            performSegueWithIdentifier(segueEventSelect, sender: typeCell)
             break;
         case dressCodeCell:
-            performSegueWithIdentifier(segueSelect, sender: dressCodeCell)
+            performSegueWithIdentifier(segueEventSelect, sender: dressCodeCell)
             break;
         case startCell:
-            performSegueWithIdentifier(segueDate, sender: startCell)
+            performSegueWithIdentifier(segueEventDate, sender: startCell)
             break;
         case endCell:
-            performSegueWithIdentifier(segueDate, sender: endCell)
+            performSegueWithIdentifier(segueEventDate, sender: endCell)
             break;
         case rsvpCell:
-            performSegueWithIdentifier(segueDate, sender: rsvpCell)
+            performSegueWithIdentifier(segueEventDate, sender: rsvpCell)
             break;
         default:
             break;
@@ -263,6 +267,16 @@ class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
         return true
     }
     
+    // MARK: - Helpers
+    
+    func hideKeyboard() {
+        for textField in textFields {
+            if textField.isFirstResponder() {
+                textField.resignFirstResponder()
+            }
+        }
+    }
+    
     // MARK: - Actions
     
     func didTapCancelButton(sender: UIBarButtonItem) {
@@ -275,7 +289,12 @@ class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
             editEvent.clone(event)
             event = editEvent
         }
-        eventPlanner.saveEvents([event]) { (success) -> Void in
+        eventPlanner.saveEvents([event]) { (events) -> Void in
+            if self.editEvent != nil {
+                self.editEvent.clone(events[0])
+            } else {
+                self.eventPlanner.events.appendContentsOf(events)
+            }
             self.dismissViewControllerAnimated(true, completion: nil)
         }
     }
@@ -287,14 +306,14 @@ class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
     // MARK: - Navigation
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == segueSelect {
+        if segue.identifier == segueEventSelect {
             if let controller = segue.destinationViewController as? EventSelectTableViewController {
                 if let cell = sender as? UITableViewCell {
                     controller.mode = cell == dressCodeCell ? .DressCode : .Type
                     controller.event = event
                 }
             }
-        } else if segue.identifier == segueDate {
+        } else if segue.identifier == segueEventDate {
             if let controller = segue.destinationViewController as? EventDatePickerTableViewController {
                 controller.event = event
                 if let cell = sender as? UITableViewCell {

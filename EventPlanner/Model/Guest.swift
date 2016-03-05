@@ -14,17 +14,20 @@ class Guest: NSObject {
         case
         GuestChanged,
         GuestEventChanged,
+        GuestRSVPTypeChanged,
         GuestNameChanged,
-        GuestRSVPChanged,
         GuestAddressChanged,
         GuestPhoneChanged,
         GuestEmailChanged,
         GuestWebsiteChanged,
         GuestFacebookChanged,
         GuestTwitterChanged,
-        GuestInstagramChanged,
-        GuestSeatChanged
+        GuestInstagramChanged
     }
+    
+    lazy var eventPlanner: EventPlanner = {
+        return EventPlanner.sharedInstance()
+    }()
     
     var entityId: String?
     var metadata: KCSMetadata?
@@ -35,21 +38,15 @@ class Guest: NSObject {
         }
     }
     
-    var seat: Seat? {
+    var rsvpType: RSVPType? {
         didSet {
-            postNotifications(Change.GuestSeatChanged.rawValue)
+            postNotifications(Change.GuestRSVPTypeChanged.rawValue)
         }
     }
     
     var name = String() {
         didSet {
             postNotifications(Change.GuestNameChanged.rawValue)
-        }
-    }
-    
-    var rsvp = String() {
-        didSet {
-            postNotifications(Change.GuestRSVPChanged.rawValue)
         }
     }
     
@@ -109,36 +106,49 @@ class Guest: NSObject {
     
     // MARK: - Clone
     
-    func clone(person: Guest) {
-        entityId = person.entityId
-        metadata = person.metadata
+    func clone(guest: Guest) {
+        entityId = guest.entityId
+        metadata = guest.metadata
         
-        event = person.event
-        seat = person.seat
+        event = guest.event
+        rsvpType = guest.rsvpType
         
-        name = person.name
-        rsvp = person.rsvp
-        address = person.address
-        phone = person.phone
-        email = person.email
-        website = person.website
-        facebook = person.facebook
-        twitter = person.twitter
-        instagram = person.instagram
+        name = guest.name
+        address = guest.address
+        phone = guest.phone
+        email = guest.email
+        website = guest.website
+        facebook = guest.facebook
+        twitter = guest.twitter
+        instagram = guest.instagram
+    }
+    
+    // MARK: - Update
+    
+    func deleteSelf(cancel: (() -> Void)?, confirm: (() -> Void)?) {
+        self.eventPlanner.deleteGuests([self], completionHandler: { (success) -> Void in
+            if success {
+                if let index = self.event.guests.indexOf(self) {
+                    self.event.guests.removeAtIndex(index)
+                }
+                confirm?()
+            } else {
+                cancel?()
+            }
+        })
     }
     
     // MARK: - Kinvey
     
     override func hostToKinveyPropertyMapping() -> [NSObject : AnyObject]! {
         return [
-            "entityId" : KCSEntityKeyId, //the required _id field
-            "metadata" : KCSEntityKeyMetadata, //optional _metadata field
-            
+            "entityId" : KCSEntityKeyId,
+            "metadata" : KCSEntityKeyMetadata,
+
             "event" : "event",
-            "seat" : "seat",
+            "rsvpType" : "rsvpType",
             
             "name" : "name",
-            "rsvp" : "rsvp",
             "address" : "address",
             "phone" : "phone",
             "email" : "email",
@@ -152,7 +162,7 @@ class Guest: NSObject {
     static override func kinveyPropertyToCollectionMapping() -> [NSObject : AnyObject]! {
         return [
             "event" : "Events",
-            "seat" : "Seats"
+            "rsvpType" : "RSVPTypes"
         ]
     }
     
@@ -160,7 +170,7 @@ class Guest: NSObject {
         return [
             KCS_REFERENCE_MAP_KEY : [
                 "event" : Event.self,
-                "seat" : Seat.self
+                "rsvpType" : RSVPType.self
             ]
         ]
     }

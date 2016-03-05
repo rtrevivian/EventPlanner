@@ -28,14 +28,15 @@ class Event: NSObject {
         EventTwitterChanged,
         EventInstagramChanged,
         EventTablesChanged,
-        EventGuestsChanged
+        EventGuestsChanged,
+        EventRSVPsChanged
     }
+    
+    static var dateFormatter = NSDateFormatter()
     
     lazy var eventPlanner: EventPlanner = {
         return EventPlanner.sharedInstance()
     }()
-    
-    static var dateFormatter = NSDateFormatter()
     
     var entityId: String?
     var metadata: KCSMetadata?
@@ -156,17 +157,22 @@ class Event: NSObject {
         }
     }
     
-    var tables = [Table]() {
+    var guests = [Guest]() {
         didSet {
-            print("EventTablesChanged ")
-            postNotifications(Change.EventTablesChanged.rawValue)
+            var rsvps = [Guest]()
+            for guest in guests {
+                if let _ = guest.rsvpType {
+                    rsvps.append(guest)
+                }
+            }
+            self.rsvps = rsvps
+            postNotifications(Change.EventGuestsChanged.rawValue)
         }
     }
     
-    var guests = [Guest]() {
+    var rsvps = [Guest]() {
         didSet {
-            print("EventGuestsChanged")
-            postNotifications(Change.EventGuestsChanged.rawValue)
+            postNotifications(Change.EventRSVPsChanged.rawValue)
         }
     }
     
@@ -200,13 +206,42 @@ class Event: NSObject {
     
     // MARK: - Update
     
+    func deleteSelf(cancel: (() -> Void)?, confirm: (() -> Void)?) -> AlertViewController {
+        let alert = AlertViewController(title: "Delete Event", message: "This cannot be undone", preferredStyle: .ActionSheet)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action) -> Void in
+            cancel?()
+        }))
+        alert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { (action) -> Void in
+            self.eventPlanner.deleteEvents([self], completionHandler: { (success) -> Void in
+                if success {
+                    if let index = self.eventPlanner.events.indexOf(self) {
+                        self.eventPlanner.events.removeAtIndex(index)
+                    }
+                    confirm?()
+                } else {
+                    cancel?()
+                }
+            })
+        }))
+        return alert
+    }
+    
+    func empty(cancel: (() -> Void)?, confirm: (() -> Void)?) -> AlertViewController {
+        let alert = AlertViewController(title: "Remove Guests", message: "This cannot be undone", preferredStyle: .ActionSheet)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action) -> Void in
+            cancel?()
+        }))
+        alert.addAction(UIAlertAction(title: "Empty", style: .Destructive, handler: { (action) -> Void in
+            self.guests.removeAll()
+            confirm?()
+        }))
+        return alert
+    }
+    
     func update(completionHandler: (() -> Void)?) {
-        eventPlanner.getTables(self) { (tables) -> Void in
-            self.tables = tables
-            self.eventPlanner.getGuests(self) { (guests) -> Void in
-                self.guests = guests
-                completionHandler?()
-            }
+        eventPlanner.getGuests(self) { (guests) -> Void in
+            self.guests = guests
+            completionHandler?()
         }
     }
     

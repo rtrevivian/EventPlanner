@@ -19,14 +19,8 @@ class EventSelectTableViewController: UITableViewController {
         return EventPlanner.sharedInstance()
     }()
     
-    var event: Event!
-    
+    var event: Event!    
     var mode: Mode!
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-    }
 
     // MARK: - Table view data source
 
@@ -41,10 +35,10 @@ class EventSelectTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
         if mode == .Type {
-            cell.accessoryType =  eventPlanner.eventTypes[indexPath.row] == event.eventType ? .Checkmark : .None
+            cell.accessoryType =  eventPlanner.eventTypes[indexPath.row].entityId == event.eventType?.entityId ? .Checkmark : .None
             cell.textLabel?.text = eventPlanner.eventTypes[indexPath.row].name
         } else {
-            cell.accessoryType = eventPlanner.dressCodes[indexPath.row] == event.dressCode ? .Checkmark : .None
+            cell.accessoryType = eventPlanner.dressCodes[indexPath.row].entityId == event.dressCode?.entityId ? .Checkmark : .None
             cell.textLabel?.text = eventPlanner.dressCodes[indexPath.row].name
         }
         return cell

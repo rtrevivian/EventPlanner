@@ -11,14 +11,18 @@ import MapKit
 
 extension UIViewController {
     
+    func getFlexibleSpace() -> UIBarButtonItem {
+        return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: self, action: nil)
+    }
+    
     func presentSimpleAlert(title: String?, message: String?) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+        let alert = AlertViewController(title: title, message: message, preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.Default, handler: nil))
         presentViewController(alert, animated: true, completion: nil)
     }
     
     func presentTextFieldAlert(title: String?, message: String?, textFields: [UITextField]) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+        let alert = AlertViewController(title: title, message: message, preferredStyle: .Alert)
         alert.addTextFieldWithConfigurationHandler(nil)
         alert.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.Default, handler: nil))
         presentViewController(alert, animated: true, completion: nil)
@@ -34,8 +38,17 @@ extension UIViewController {
     }
     
     func openFacebookPage(str: String) {
+        guard !str.isEmpty else {
+            presentSimpleAlert(nil, message: "Enter a Facebook page URL")
+            return
+        }
+        let prefix = "facebook.com/"
+        var slug = str
+        if slug.containsString(prefix) {
+            slug = slug.stringByReplacingOccurrencesOfString(prefix, withString: "")
+        }
         // http://stackoverflow.com/questions/5707722/what-are-all-the-custom-url-schemes-supported-by-the-facebook-iphone-app
-        openApplicationOrWeb("fb://page?id=" + str, webURL: "https://www.facebook.com/" + str)
+        openApplicationOrWeb("fb://page?id=" + str, webURL: "https://www.facebook.com/" + slug)
     }
     
     func openInstagramWithHastag(str: String) {
@@ -47,10 +60,6 @@ extension UIViewController {
         let hashtag = str.stringByReplacingOccurrencesOfString("#", withString: "")
         openApplicationOrWeb("instagram://tag?name=" + str, webURL: "https://www.instagram.com/explore/tags/" + hashtag)
 
-    }
-    
-    func editInstagram() {
-        
     }
     
     func openMaps(address: String) {
@@ -112,13 +121,13 @@ extension UIViewController {
             presentSimpleAlert(nil, message: "Enter an website URL")
             return
         }
-        let http = "http://"
+        let prefix = "http://"
         if str.characters.count > 3 {
-            if (str as NSString).substringToIndex(4) != http {
-                str = http + str
+            if (str as NSString).substringToIndex(4) != prefix {
+                str = prefix + str
             }
         } else {
-            str = http + str
+            str = prefix + str
         }
         openApplication(str)
     }
