@@ -15,6 +15,8 @@ extension UIViewController {
         return UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: self, action: nil)
     }
     
+    // MARK: - Alerts
+    
     func presentSimpleAlert(title: String?, message: String?) {
         let alert = AlertViewController(title: title, message: message, preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.Default, handler: nil))

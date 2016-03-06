@@ -10,6 +10,8 @@ import Foundation
 
 class Event: NSObject {
     
+    // MARK: - Enums
+    
     enum Change: String {
         case
         EventChanged,
@@ -31,6 +33,8 @@ class Event: NSObject {
         EventGuestsChanged,
         EventRSVPsChanged
     }
+    
+    // MARK: - Properties
     
     static var dateFormatter = NSDateFormatter()
     
@@ -224,6 +228,19 @@ class Event: NSObject {
             })
         }))
         return alert
+    }
+    
+    func deleteGuests(guests: [Guest], completionHandler: (() -> Void)?) {
+        eventPlanner.deleteGuests(guests) { (success) -> Void in
+            if success {
+                for guest in guests {
+                    if let index = self.guests.indexOf(guest) {
+                        self.guests.removeAtIndex(index)
+                    }
+                }
+            }
+            completionHandler?()
+        }
     }
     
     func empty(cancel: (() -> Void)?, confirm: (() -> Void)?) -> AlertViewController {

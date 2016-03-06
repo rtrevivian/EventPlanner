@@ -10,6 +10,8 @@ import Foundation
 
 class Guest: NSObject {
     
+    // MARK: - Enums
+    
     enum Change: String {
         case
         GuestChanged,
@@ -24,6 +26,8 @@ class Guest: NSObject {
         GuestTwitterChanged,
         GuestInstagramChanged
     }
+    
+    // MARK: - Properties
     
     lazy var eventPlanner: EventPlanner = {
         return EventPlanner.sharedInstance()
@@ -121,21 +125,6 @@ class Guest: NSObject {
         facebook = guest.facebook
         twitter = guest.twitter
         instagram = guest.instagram
-    }
-    
-    // MARK: - Update
-    
-    func deleteSelf(cancel: (() -> Void)?, confirm: (() -> Void)?) {
-        self.eventPlanner.deleteGuests([self], completionHandler: { (success) -> Void in
-            if success {
-                if let index = self.event.guests.indexOf(self) {
-                    self.event.guests.removeAtIndex(index)
-                }
-                confirm?()
-            } else {
-                cancel?()
-            }
-        })
     }
     
     // MARK: - Kinvey

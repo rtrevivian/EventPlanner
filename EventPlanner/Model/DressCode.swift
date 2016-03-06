@@ -10,6 +10,8 @@ import Foundation
 
 class DressCode: NSObject {
     
+    // MARK: - Properties
+    
     var entityId: String?
     var name = String()
     

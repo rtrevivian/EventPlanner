@@ -70,7 +70,7 @@ class GuestsTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
-            event.guests[indexPath.row].deleteSelf(nil, confirm: { () -> Void in
+            event.deleteGuests([event.guests[indexPath.row]], completionHandler: { () -> Void in
                 self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             })
         }
@@ -123,6 +123,7 @@ class GuestsTableViewController: UITableViewController {
             }
         } else if let guest = sender as? Guest {
             if let controller = segue.destinationViewController as? GuestDetailTableViewController {
+                guest.event = event
                 controller.guest = guest
             }
         }

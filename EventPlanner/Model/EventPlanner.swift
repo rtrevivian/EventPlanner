@@ -11,6 +11,8 @@ import CoreData
 
 class EventPlanner {
     
+    // MARK: - Properties
+    
     class func sharedInstance() -> EventPlanner {
         struct Static {
             static let instance = EventPlanner()
@@ -137,6 +139,17 @@ class EventPlanner {
             user.deleteUser()
         }
         user = nil
+    }
+    
+    func signUp(username: String, password: String, completionHandler: ((NSError?) -> Void)?) {
+        KCSUser.userWithUsername(username, password: password, fieldsAndValues: nil) { (user, error, result) -> Void in
+            guard error == nil else {
+                print("signUp error:", error)
+                completionHandler?(error)
+                return
+            }
+            completionHandler?(nil)
+        }
     }
     
     // MARK: - Static data types

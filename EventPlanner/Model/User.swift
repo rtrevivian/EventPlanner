@@ -12,6 +12,8 @@ import CoreData
 @objc(User)
 class User: NSManagedObject {
     
+    // MARK: - Structs
+    
     struct Keys {
         static let Username = "username"
         static let Password = "password"

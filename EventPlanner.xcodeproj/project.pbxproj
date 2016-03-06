@@ -7,16 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		790189651C8C894200EF912F /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790189641C8C894200EF912F /* SignUpViewController.swift */; };
 		790267051C8A395A007F41EB /* LabelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790267041C8A395A007F41EB /* LabelTableViewCell.swift */; };
 		795B33C31C8A17A9003861BE /* KeyboardController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795B33C21C8A17A9003861BE /* KeyboardController.swift */; };
 		797655C71C8B22FB006169DC /* AlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 797655C61C8B22FB006169DC /* AlertViewController.swift */; };
 		797E86621C80EDD7003FF26B /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 797E86611C80EDD7003FF26B /* Colors.swift */; };
 		7980A9851C88D795005115D7 /* GuestSelectTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7980A9841C88D795005115D7 /* GuestSelectTableViewController.swift */; };
-		799ED12B1C7E4B3200B9B64D /* OverlaySampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799ED12A1C7E4B3200B9B64D /* OverlaySampleViewController.swift */; };
-		799ED1301C7E51A300B9B64D /* OverlayAnimatorDismiss.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799ED12C1C7E51A300B9B64D /* OverlayAnimatorDismiss.swift */; };
-		799ED1311C7E51A300B9B64D /* OverlayAnimatorPresent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799ED12D1C7E51A300B9B64D /* OverlayAnimatorPresent.swift */; };
-		799ED1321C7E51A300B9B64D /* OverlayPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799ED12E1C7E51A300B9B64D /* OverlayPresentationController.swift */; };
-		799ED1331C7E51A300B9B64D /* OverlayTransitioningDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799ED12F1C7E51A300B9B64D /* OverlayTransitioningDelegate.swift */; };
 		799ED1351C7E635E00B9B64D /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799ED1341C7E635E00B9B64D /* BaseViewController.swift */; };
 		799F688B1C7F4F3700B81DC1 /* CoreDataStackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799F688A1C7F4F3700B81DC1 /* CoreDataStackManager.swift */; };
 		799F688D1C7F4FDA00B81DC1 /* EventPlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799F688C1C7F4FDA00B81DC1 /* EventPlanner.swift */; };
@@ -32,6 +28,7 @@
 		79B9C0C11C7F9F9E000B61C8 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9C0C01C7F9F9E000B61C8 /* WebKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		79B9C0C71C7FD4A1000B61C8 /* EventType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9C0C61C7FD4A1000B61C8 /* EventType.swift */; };
 		79B9C0C91C7FD6E3000B61C8 /* DressCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9C0C81C7FD6E3000B61C8 /* DressCode.swift */; };
+		79CA0F511C8CEB1C00CA98EB /* Readme.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 79CA0F501C8CEB1C00CA98EB /* Readme.pdf */; };
 		79D3BA681C796BF6003F6BF5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D3BA671C796BF6003F6BF5 /* AppDelegate.swift */; };
 		79D3BA6D1C796BF6003F6BF5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 79D3BA6B1C796BF6003F6BF5 /* Main.storyboard */; };
 		79D3BA701C796BF6003F6BF5 /* EventPlanner.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 79D3BA6E1C796BF6003F6BF5 /* EventPlanner.xcdatamodeld */; };
@@ -49,10 +46,7 @@
 		79DBCAB31C8352A20052AE0E /* EventDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79DBCAB21C8352A20052AE0E /* EventDetailTableViewController.swift */; };
 		79DBCAB71C84CD860052AE0E /* GuestEditTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79DBCAB61C84CD860052AE0E /* GuestEditTableViewController.swift */; };
 		79DBCAB91C84CDDD0052AE0E /* GuestDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79DBCAB81C84CDDD0052AE0E /* GuestDetailTableViewController.swift */; };
-		79F33DD01C7CB1C300D5A09D /* IconTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F33DCF1C7CB1C300D5A09D /* IconTableViewCell.swift */; };
 		79F598EB1C86361F00387842 /* RSVPType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F598EA1C86361F00387842 /* RSVPType.swift */; };
-		79FC66A91C7A5D700046BFFF /* TextTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79FC66A81C7A5D700046BFFF /* TextTableViewCell.swift */; };
-		79FC66AB1C7B5E010046BFFF /* DateTimeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79FC66AA1C7B5E010046BFFF /* DateTimeTableViewCell.swift */; };
 		79FDAB701C85574B0035B242 /* KinveyKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79FDAB6F1C85574B0035B242 /* KinveyKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -67,16 +61,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		790189641C8C894200EF912F /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SignUpViewController.swift; path = Controller/SignUpViewController.swift; sourceTree = "<group>"; };
 		790267041C8A395A007F41EB /* LabelTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LabelTableViewCell.swift; path = View/LabelTableViewCell.swift; sourceTree = "<group>"; };
 		795B33C21C8A17A9003861BE /* KeyboardController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KeyboardController.swift; path = Controller/KeyboardController.swift; sourceTree = "<group>"; };
 		797655C61C8B22FB006169DC /* AlertViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AlertViewController.swift; path = Controller/AlertViewController.swift; sourceTree = "<group>"; };
 		797E86611C80EDD7003FF26B /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = Model/Colors.swift; sourceTree = "<group>"; };
 		7980A9841C88D795005115D7 /* GuestSelectTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GuestSelectTableViewController.swift; path = Controller/Guest/GuestSelectTableViewController.swift; sourceTree = "<group>"; };
-		799ED12A1C7E4B3200B9B64D /* OverlaySampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OverlaySampleViewController.swift; path = Overlay/OverlaySampleViewController.swift; sourceTree = "<group>"; };
-		799ED12C1C7E51A300B9B64D /* OverlayAnimatorDismiss.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OverlayAnimatorDismiss.swift; path = Overlay/OverlayAnimatorDismiss.swift; sourceTree = "<group>"; };
-		799ED12D1C7E51A300B9B64D /* OverlayAnimatorPresent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OverlayAnimatorPresent.swift; path = Overlay/OverlayAnimatorPresent.swift; sourceTree = "<group>"; };
-		799ED12E1C7E51A300B9B64D /* OverlayPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OverlayPresentationController.swift; path = Overlay/OverlayPresentationController.swift; sourceTree = "<group>"; };
-		799ED12F1C7E51A300B9B64D /* OverlayTransitioningDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OverlayTransitioningDelegate.swift; path = Overlay/OverlayTransitioningDelegate.swift; sourceTree = "<group>"; };
 		799ED1341C7E635E00B9B64D /* BaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BaseViewController.swift; path = Controller/BaseViewController.swift; sourceTree = "<group>"; };
 		799F688A1C7F4F3700B81DC1 /* CoreDataStackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataStackManager.swift; path = Model/CoreDataStackManager.swift; sourceTree = "<group>"; };
 		799F688C1C7F4FDA00B81DC1 /* EventPlanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EventPlanner.swift; path = Model/EventPlanner.swift; sourceTree = "<group>"; };
@@ -93,6 +83,7 @@
 		79B9C0C21C7F9FE1000B61C8 /* EventPlanner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EventPlanner-Bridging-Header.h"; sourceTree = "<group>"; };
 		79B9C0C61C7FD4A1000B61C8 /* EventType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EventType.swift; path = Model/EventType.swift; sourceTree = "<group>"; };
 		79B9C0C81C7FD6E3000B61C8 /* DressCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DressCode.swift; path = Model/DressCode.swift; sourceTree = "<group>"; };
+		79CA0F501C8CEB1C00CA98EB /* Readme.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Readme.pdf; sourceTree = "<group>"; };
 		79D3BA641C796BF6003F6BF5 /* EventPlanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EventPlanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79D3BA671C796BF6003F6BF5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		79D3BA6C1C796BF6003F6BF5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -114,10 +105,7 @@
 		79DBCAB21C8352A20052AE0E /* EventDetailTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EventDetailTableViewController.swift; path = Controller/Event/EventDetailTableViewController.swift; sourceTree = "<group>"; };
 		79DBCAB61C84CD860052AE0E /* GuestEditTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GuestEditTableViewController.swift; path = Controller/Guest/GuestEditTableViewController.swift; sourceTree = "<group>"; };
 		79DBCAB81C84CDDD0052AE0E /* GuestDetailTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GuestDetailTableViewController.swift; path = Controller/Guest/GuestDetailTableViewController.swift; sourceTree = "<group>"; };
-		79F33DCF1C7CB1C300D5A09D /* IconTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IconTableViewCell.swift; path = View/IconTableViewCell.swift; sourceTree = "<group>"; };
 		79F598EA1C86361F00387842 /* RSVPType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RSVPType.swift; path = Model/RSVPType.swift; sourceTree = "<group>"; };
-		79FC66A81C7A5D700046BFFF /* TextTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TextTableViewCell.swift; path = View/TextTableViewCell.swift; sourceTree = "<group>"; };
-		79FC66AA1C7B5E010046BFFF /* DateTimeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DateTimeTableViewCell.swift; path = View/DateTimeTableViewCell.swift; sourceTree = "<group>"; };
 		79FDAB6F1C85574B0035B242 /* KinveyKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = KinveyKit.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -149,18 +137,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		7981DF841C7E48230054A015 /* Overlay */ = {
-			isa = PBXGroup;
-			children = (
-				799ED12C1C7E51A300B9B64D /* OverlayAnimatorDismiss.swift */,
-				799ED12D1C7E51A300B9B64D /* OverlayAnimatorPresent.swift */,
-				799ED12E1C7E51A300B9B64D /* OverlayPresentationController.swift */,
-				799ED12F1C7E51A300B9B64D /* OverlayTransitioningDelegate.swift */,
-				799ED12A1C7E4B3200B9B64D /* OverlaySampleViewController.swift */,
-			);
-			name = Overlay;
-			sourceTree = "<group>";
-		};
 		79B9C0AD1C7F9F1C000B61C8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -200,7 +176,6 @@
 			isa = PBXGroup;
 			children = (
 				79B9C0AD1C7F9F1C000B61C8 /* Frameworks */,
-				7981DF841C7E48230054A015 /* Overlay */,
 				79D3BA8A1C796D8C003F6BF5 /* Controller */,
 				79D3BA8B1C796D98003F6BF5 /* Model */,
 				79D3BA8F1C796E52003F6BF5 /* Storyboard */,
@@ -208,6 +183,7 @@
 				79D3BA711C796BF6003F6BF5 /* Assets.xcassets */,
 				79D3BA761C796BF6003F6BF5 /* Info.plist */,
 				79D3BA6E1C796BF6003F6BF5 /* EventPlanner.xcdatamodeld */,
+				79CA0F501C8CEB1C00CA98EB /* Readme.pdf */,
 			);
 			path = EventPlanner;
 			sourceTree = "<group>";
@@ -226,10 +202,11 @@
 			children = (
 				79D6E64C1C7FDF600025765B /* Event */,
 				79D6E64B1C7FDF5B0025765B /* Guest */,
+				797655C61C8B22FB006169DC /* AlertViewController.swift */,
 				799ED1341C7E635E00B9B64D /* BaseViewController.swift */,
 				795B33C21C8A17A9003861BE /* KeyboardController.swift */,
 				79D3BA901C79713B003F6BF5 /* LoginViewController.swift */,
-				797655C61C8B22FB006169DC /* AlertViewController.swift */,
+				790189641C8C894200EF912F /* SignUpViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -255,9 +232,6 @@
 		79D3BA8C1C796D9C003F6BF5 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				79FC66A81C7A5D700046BFFF /* TextTableViewCell.swift */,
-				79FC66AA1C7B5E010046BFFF /* DateTimeTableViewCell.swift */,
-				79F33DCF1C7CB1C300D5A09D /* IconTableViewCell.swift */,
 				790267041C8A395A007F41EB /* LabelTableViewCell.swift */,
 			);
 			name = View;
@@ -376,6 +350,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79CA0F511C8CEB1C00CA98EB /* Readme.pdf in Resources */,
 				79D3BA751C796BF6003F6BF5 /* LaunchScreen.storyboard in Resources */,
 				79D3BA721C796BF6003F6BF5 /* Assets.xcassets in Resources */,
 				79D3BA6D1C796BF6003F6BF5 /* Main.storyboard in Resources */,
@@ -397,9 +372,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				79D6E66F1C7FDFE40025765B /* EventsTableViewController.swift in Sources */,
-				799ED1311C7E51A300B9B64D /* OverlayAnimatorPresent.swift in Sources */,
-				79FC66AB1C7B5E010046BFFF /* DateTimeTableViewCell.swift in Sources */,
-				799ED12B1C7E4B3200B9B64D /* OverlaySampleViewController.swift in Sources */,
 				79D806311C89E75D00478581 /* User.swift in Sources */,
 				797E86621C80EDD7003FF26B /* Colors.swift in Sources */,
 				799F688B1C7F4F3700B81DC1 /* CoreDataStackManager.swift in Sources */,
@@ -411,24 +383,20 @@
 				79D6E66D1C7FDFE40025765B /* EventEditTableViewController.swift in Sources */,
 				79B9C0C71C7FD4A1000B61C8 /* EventType.swift in Sources */,
 				79B9C0C91C7FD6E3000B61C8 /* DressCode.swift in Sources */,
-				79FC66A91C7A5D700046BFFF /* TextTableViewCell.swift in Sources */,
 				79D3BA911C79713B003F6BF5 /* LoginViewController.swift in Sources */,
 				79B7F63F1C88A5EE0085979A /* GuestsTableViewController.swift in Sources */,
 				79D6E66C1C7FDFE40025765B /* EventDatePickerTableViewController.swift in Sources */,
 				79D3BA701C796BF6003F6BF5 /* EventPlanner.xcdatamodeld in Sources */,
-				799ED1321C7E51A300B9B64D /* OverlayPresentationController.swift in Sources */,
 				799F688D1C7F4FDA00B81DC1 /* EventPlanner.swift in Sources */,
 				79D3BA971C797443003F6BF5 /* Event.swift in Sources */,
 				790267051C8A395A007F41EB /* LabelTableViewCell.swift in Sources */,
 				79F598EB1C86361F00387842 /* RSVPType.swift in Sources */,
 				799ED1351C7E635E00B9B64D /* BaseViewController.swift in Sources */,
 				79DBCAB71C84CD860052AE0E /* GuestEditTableViewController.swift in Sources */,
-				799ED1301C7E51A300B9B64D /* OverlayAnimatorDismiss.swift in Sources */,
+				790189651C8C894200EF912F /* SignUpViewController.swift in Sources */,
 				79D6E66E1C7FDFE40025765B /* EventSelectTableViewController.swift in Sources */,
-				79F33DD01C7CB1C300D5A09D /* IconTableViewCell.swift in Sources */,
 				79DBCAB91C84CDDD0052AE0E /* GuestDetailTableViewController.swift in Sources */,
 				7980A9851C88D795005115D7 /* GuestSelectTableViewController.swift in Sources */,
-				799ED1331C7E51A300B9B64D /* OverlayTransitioningDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

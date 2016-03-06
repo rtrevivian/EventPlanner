@@ -10,10 +10,14 @@ import UIKit
 
 class EventSelectTableViewController: UITableViewController {
     
+    // MARK: - Enums
+    
     enum Mode {
         
         case Type, DressCode
     }
+    
+    // MARK: - Properties
 
     lazy var eventPlanner: EventPlanner = {
         return EventPlanner.sharedInstance()

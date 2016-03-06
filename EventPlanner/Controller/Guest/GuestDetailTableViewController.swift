@@ -145,7 +145,7 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
         let row = getTableViewRow(indexPath)
         switch row {
         case .ActionDelete:
-            guest.deleteSelf(nil, confirm: { () -> Void in
+            guest.event.deleteGuests([guest], completionHandler: { () -> Void in
                 self.navigationController?.popViewControllerAnimated(true)
             })
             break;

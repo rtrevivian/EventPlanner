@@ -10,6 +10,8 @@ import UIKit
 
 class GuestSelectTableViewController: UITableViewController {
     
+    // MARK: - Properties
+    
     lazy var eventPlanner: EventPlanner = {
         return EventPlanner.sharedInstance()
     }()

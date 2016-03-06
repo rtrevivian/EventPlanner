@@ -10,6 +10,8 @@ import Foundation
 
 class EventType: NSObject {
     
+    // MARK: - Properties
+    
     var entityId: String?
     var metadata: KCSMetadata?
     

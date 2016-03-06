@@ -10,6 +10,8 @@ import UIKit
 
 class EventsTableViewController: UITableViewController {
     
+    // MARK: - Properties
+    
     lazy var eventPlanner: EventPlanner = {
         return EventPlanner.sharedInstance()
     }()

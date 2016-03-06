@@ -10,11 +10,14 @@ import UIKit
 import CoreData
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
+    
+    // MARK: - Properties
 
     @IBOutlet weak var loginStack: UIStackView!
-    @IBOutlet weak var emailTextField: UITextField!
+    @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
-    @IBOutlet weak var loginButton: UIButton!
+    @IBOutlet weak var submitButton: UIButton!
+    @IBOutlet weak var signUpButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
     lazy var eventPlanner: EventPlanner = {
@@ -22,6 +25,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }()
     
     let segueEvents = "segueEvents"
+    let segueSignUp = "segueSignUp"
     
     // MARK: - View
     
@@ -34,7 +38,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             if success {
                 self.eventPlanner.fetchUsers({ () -> Void in
                     if let user = self.eventPlanner.user {
-                        self.emailTextField.text = user.username
+                        self.usernameTextField.text = user.username
                         self.passwordTextField.text = user.password
                         self.login()
                     }
@@ -44,11 +48,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             }
         }
         
-        emailTextField.delegate = self
+        usernameTextField.delegate = self
         passwordTextField.delegate = self
         
-        loginButton.backgroundColor = Colors.purple
-        loginButton.tintColor = UIColor.whiteColor()
+        submitButton.tintColor = UIColor.whiteColor()
+        signUpButton.tintColor = UIColor.whiteColor()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -57,7 +61,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         navigationController?.navigationBarHidden = true
         navigationController?.toolbarHidden = true
         KeyboardController.addObservers(self)
-        clearTextFields()
+        
+        usernameTextField.text = ""
+        passwordTextField.text = ""
         setEnabled(true)
     }
     
@@ -86,13 +92,13 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     // MARK: - Text field delegate
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        if textField == emailTextField {
+        if textField == usernameTextField {
             passwordTextField.becomeFirstResponder()
         } else if textField == passwordTextField {
-            login()
             if textField.isFirstResponder() {
                 textField.resignFirstResponder()
             }
+            login()
         }
         return true
     }
@@ -100,9 +106,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     // MARK: - Helpers
     
     func login() {
-        if let username = emailTextField.text {
+        if let username = usernameTextField.text {
             if username.isEmpty {
-                presentSimpleAlert("Email required", message: "Please enter a valid email")
+                presentSimpleAlert("Username required", message: "Please enter a username")
             } else {
                 if let password = passwordTextField.text {
                     if password.isEmpty {
@@ -126,21 +132,20 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     func setEnabled(enabled: Bool) {
-        emailTextField.enabled = enabled
+        usernameTextField.enabled = enabled
         passwordTextField.enabled = enabled
-        loginButton.enabled = enabled
+        submitButton.enabled = enabled
         enabled ? activityIndicator.stopAnimating() : activityIndicator.startAnimating()
-    }
-    
-    func clearTextFields() {
-        emailTextField.text = ""
-        passwordTextField.text = ""
     }
 
     // MARK: - Actions
     
-    @IBAction func didTapLoginButton(sender: UIButton) {
+    @IBAction func didTapSubmitButton(sender: UIButton) {
         login()
     }
 
+    @IBAction func didTapSignUpButton(sender: UIButton) {
+        performSegueWithIdentifier(segueSignUp, sender: self)
+    }
+    
 }
