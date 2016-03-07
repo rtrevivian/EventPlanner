@@ -80,10 +80,16 @@ class EventsTableViewController: UITableViewController {
             self.presentViewController(alert, animated: true, completion: nil)
         }
         let empty = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Empty") { (action, indexPath) -> Void in
+            
             let alert = self.eventPlanner.events[indexPath.row].empty({ () -> Void in
+                self.editing = false
+                }, confirm: { (error) -> Void in
                     self.editing = false
-                }, confirm: { () -> Void in
-                    self.editing = false
+                    guard error == nil else {
+                        self.presentSimpleAlert("Unable to remove guests", message: error?.localizedDescription)
+                        return
+                    }
+                    self.presentSimpleAlert("Empty complete", message: "All guests removed")
             })
             self.presentViewController(alert, animated: true, completion: nil)
         }

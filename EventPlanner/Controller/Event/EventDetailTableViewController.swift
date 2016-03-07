@@ -283,7 +283,13 @@ class EventDetailTableViewController: UITableViewController {
             self.presentViewController(alert, animated: true, completion: nil)
             break;
         case .ActionEmpty:
-            let alert = event.empty(nil, confirm: nil)
+            let alert = event.empty(nil, confirm: { (error) -> Void in
+                guard error == nil else {
+                    self.presentSimpleAlert("Unable to remove guests", message: error?.localizedDescription)
+                    return
+                }
+                self.presentSimpleAlert("Empty complete", message: "All guests removed")
+            })
             self.presentViewController(alert, animated: true, completion: nil)
             break;
         case .BasicDressCode:

@@ -245,14 +245,20 @@ class Event: NSObject {
         }
     }
     
-    func empty(cancel: (() -> Void)?, confirm: (() -> Void)?) -> AlertViewController {
+    func empty(cancel: (() -> Void)?, confirm: ((NSError?) -> Void)?) -> AlertViewController {
         let alert = AlertViewController(title: "Remove Guests", message: "This cannot be undone", preferredStyle: .ActionSheet)
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action) -> Void in
             cancel?()
         }))
         alert.addAction(UIAlertAction(title: "Empty", style: .Destructive, handler: { (action) -> Void in
-            self.guests.removeAll()
-            confirm?()
+            self.deleteGuests(self.guests, completionHandler: { (error) -> Void in
+                guard error == nil else {
+                    print("empty error:", error)
+                    confirm?(error)
+                    return
+                }
+                confirm?(nil)
+            })
         }))
         return alert
     }
