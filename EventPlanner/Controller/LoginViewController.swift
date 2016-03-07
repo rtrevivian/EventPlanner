@@ -115,15 +115,15 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                         presentSimpleAlert("Password required", message: "Please enter a password")
                     } else {
                         setEnabled(false)
-                        eventPlanner.login(username, password: password) { (success, result) -> Void in
-                            if success {
-                                self.eventPlanner.getEvents({ (success) -> Void in
-                                    self.performSegueWithIdentifier(self.segueEvents, sender: self)
-                                })
-                            } else {
-                                self.presentSimpleAlert("Login error", message: "Please try again")
+                        eventPlanner.login(username, password: password) { (error) -> Void in
+                            guard error == nil else {
+                                self.presentSimpleAlert("Login Error", message: "Please try again")
                                 self.setEnabled(true)
+                                return
                             }
+                            self.eventPlanner.getEvents({ (success) -> Void in
+                                self.performSegueWithIdentifier(self.segueEvents, sender: self)
+                            })
                         }
                     }
                 }

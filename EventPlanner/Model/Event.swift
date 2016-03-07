@@ -210,36 +210,38 @@ class Event: NSObject {
     
     // MARK: - Update
     
-    func deleteSelf(cancel: (() -> Void)?, confirm: (() -> Void)?) -> AlertViewController {
+    func deleteSelf(cancel: ((NSError?) -> Void)?, confirm: (() -> Void)?) -> AlertViewController {
         let alert = AlertViewController(title: "Delete Event", message: "This cannot be undone", preferredStyle: .ActionSheet)
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action) -> Void in
-            cancel?()
+            cancel?(nil)
         }))
         alert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { (action) -> Void in
-            self.eventPlanner.deleteEvents([self], completionHandler: { (success) -> Void in
-                if success {
-                    if let index = self.eventPlanner.events.indexOf(self) {
-                        self.eventPlanner.events.removeAtIndex(index)
-                    }
-                    confirm?()
-                } else {
-                    cancel?()
+            self.eventPlanner.deleteEvents([self], completionHandler: { (error) -> Void in
+                guard error == nil else {
+                    cancel?(error)
+                    return
                 }
+                if let index = self.eventPlanner.events.indexOf(self) {
+                    self.eventPlanner.events.removeAtIndex(index)
+                }
+                confirm?()
             })
         }))
         return alert
     }
     
-    func deleteGuests(guests: [Guest], completionHandler: (() -> Void)?) {
-        eventPlanner.deleteGuests(guests) { (success) -> Void in
-            if success {
-                for guest in guests {
-                    if let index = self.guests.indexOf(guest) {
-                        self.guests.removeAtIndex(index)
-                    }
+    func deleteGuests(guests: [Guest], completionHandler: ((NSError?) -> Void)?) {
+        eventPlanner.deleteGuests(guests) { (error) -> Void in
+            guard error == nil else {
+                completionHandler?(error)
+                return
+            }
+            for guest in guests {
+                if let index = self.guests.indexOf(guest) {
+                    self.guests.removeAtIndex(index)
                 }
             }
-            completionHandler?()
+            completionHandler?(nil)
         }
     }
     
@@ -255,10 +257,14 @@ class Event: NSObject {
         return alert
     }
     
-    func update(completionHandler: (() -> Void)?) {
-        eventPlanner.getGuests(self) { (guests) -> Void in
-            self.guests = guests
-            completionHandler?()
+    func update(completionHandler: ((NSError?) -> Void)?) {
+        eventPlanner.getGuests(self) { (error, guests) -> Void in
+            guard error == nil else {
+                completionHandler?(error)
+                return
+            }
+            self.guests = guests!
+            completionHandler?(nil)
         }
     }
     

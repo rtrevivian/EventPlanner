@@ -74,7 +74,7 @@ extension UIViewController {
         let localSearch = MKLocalSearch(request: localSearchRequest)
         localSearch.startWithCompletionHandler({ (response, error) -> Void in
             guard error == nil else {
-                self.presentSimpleAlert("Change address", message: "Could not find " + address)
+                self.presentSimpleAlert("Address Error", message: "Could not find " + address)
                 return
             }
             let coordinate = CLLocationCoordinate2D(latitude: response!.boundingRegion.center.latitude, longitude: response!.boundingRegion.center.longitude)

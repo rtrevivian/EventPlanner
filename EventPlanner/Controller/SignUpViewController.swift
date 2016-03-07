@@ -88,7 +88,7 @@ class SignUpViewController: UIViewController {
                         eventPlanner.signUp(usernameTextField.text!, password: passwordTextField.text!) { (error) -> Void in
                             guard error == nil else {
                                 self.setEnabled(true)
-                                self.presentSimpleAlert("Sign up error", message: error?.localizedDescription)
+                                self.presentSimpleAlert("Sign up Error", message: error?.localizedDescription)
                                 return
                             }
                             let alert = AlertViewController(title: "User created", message: "Welcome to Event Planner", preferredStyle: UIAlertControllerStyle.Alert)

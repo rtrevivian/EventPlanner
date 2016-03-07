@@ -84,9 +84,13 @@ class EventDetailTableViewController: UITableViewController {
     // MARK: - Data management
     
     func refresh() {
-        eventPlanner.getEvent(event) { (event) -> Void in
-            self.event = event
+        eventPlanner.getEvent(event) { (error, event) -> Void in
             self.reload()
+            guard event == nil else {
+                self.presentSimpleAlert("Unable to load event", message: error?.localizedDescription)
+                return
+            }
+            self.event = event
         }
     }
     
@@ -268,8 +272,13 @@ class EventDetailTableViewController: UITableViewController {
         let row = getTableViewRow(indexPath)
         switch row {
         case .ActionDelete:
-            let alert = event.deleteSelf(nil, confirm: { () -> Void in
-                self.navigationController?.popViewControllerAnimated(true)
+            let alert = event.deleteSelf({ (error) -> Void in
+                guard error == nil else {
+                    self.presentSimpleAlert("Unable to delete event", message: error?.localizedDescription)
+                    return
+                }
+                }, confirm: { () -> Void in
+                    self.navigationController?.popViewControllerAnimated(true)
             })
             self.presentViewController(alert, animated: true, completion: nil)
             break;

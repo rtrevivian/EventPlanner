@@ -204,11 +204,17 @@ class GuestEditTableViewController: UITableViewController, UITextFieldDelegate {
     }
     
     func didTapSaveButton(sender: UIBarButtonItem) {
-        eventPlanner.saveGuests([guest]) { (guests) -> Void in
+        sender.enabled = false
+        eventPlanner.saveGuests([guest]) { (error, guests) -> Void in
+            guard error == nil else {
+                self.presentSimpleAlert("Unable to save guest", message: error?.localizedDescription)
+                sender.enabled = true
+                return
+            }
             if self.editGuest != nil {
-                self.editGuest.clone(guests[0])
+                self.editGuest.clone(guests![0])
             } else {
-                self.event.guests.appendContentsOf(guests)
+                self.event.guests.appendContentsOf(guests!)
             }
             self.dismissViewControllerAnimated(true, completion: nil)
         }

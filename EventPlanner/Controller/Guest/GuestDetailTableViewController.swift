@@ -145,7 +145,11 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
         let row = getTableViewRow(indexPath)
         switch row {
         case .ActionDelete:
-            guest.event.deleteGuests([guest], completionHandler: { () -> Void in
+            guest.event.deleteGuests([guest], completionHandler: { (error) -> Void in
+                guard error == nil else {
+                    self.presentSimpleAlert("Unable to delete guests", message: error?.localizedDescription)
+                    return
+                }
                 self.navigationController?.popViewControllerAnimated(true)
             })
             break;
@@ -217,7 +221,11 @@ class GuestDetailTableViewController: UITableViewController, UITextFieldDelegate
     // MARK: - Refresh
     
     func refresh() {
-        eventPlanner.getGuest(guest) { (guest) -> Void in
+        eventPlanner.getGuest(guest) { (error, guest) -> Void in
+            guard error == nil else {
+                self.presentSimpleAlert("Refresh Error", message: error?.localizedDescription)
+                return
+            }
             self.guest = guest
             self.reload()
         }

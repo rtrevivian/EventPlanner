@@ -70,7 +70,11 @@ class GuestsTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
-            event.deleteGuests([event.guests[indexPath.row]], completionHandler: { () -> Void in
+            event.deleteGuests([event.guests[indexPath.row]], completionHandler: { (error) -> Void in
+                guard error == nil else {
+                    self.presentSimpleAlert("Unable to delete guests", message: error?.localizedDescription)
+                    return
+                }
                 self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             })
         }
@@ -85,7 +89,7 @@ class GuestsTableViewController: UITableViewController {
     // MARK: - Refresh
     
     func refresh() {
-        event.update { () -> Void in
+        event.update { (error) -> Void in
             self.reload()
         }
     }

@@ -289,11 +289,20 @@ class EventEditTableViewController: UITableViewController, UITextFieldDelegate {
             editEvent.clone(event)
             event = editEvent
         }
-        eventPlanner.saveEvents([event]) { (events) -> Void in
+        eventPlanner.saveEvents([event]) { (error, events) -> Void in
+            guard error == nil else {
+                self.presentSimpleAlert("Unable to save event", message: error?.localizedDescription)
+                sender.enabled = true
+                return
+            }
+            guard events != nil else {
+                print("saveEvents events == nil")
+                return
+            }
             if self.editEvent != nil {
-                self.editEvent.clone(events[0])
+                self.editEvent.clone(events![0])
             } else {
-                self.eventPlanner.events.appendContentsOf(events)
+                self.eventPlanner.events.appendContentsOf(events!)
             }
             self.dismissViewControllerAnimated(true, completion: nil)
         }

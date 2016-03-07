@@ -68,8 +68,12 @@ class EventsTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
         let delete = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: "Delete") { (action, indexPath) -> Void in
-            let alert = self.eventPlanner.events[indexPath.row].deleteSelf({ () -> Void in
+            let alert = self.eventPlanner.events[indexPath.row].deleteSelf({ (error) -> Void in
                 self.editing = false
+                guard error == nil else {
+                    self.presentSimpleAlert("Unable to delete events", message: error?.localizedDescription)
+                    return
+                }
                 }, confirm: { () -> Void in
                     self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             })
@@ -107,8 +111,12 @@ class EventsTableViewController: UITableViewController {
     // MARK: - Refresh
     
     func refresh() {
-        eventPlanner.getEvents { (success) -> Void in
+        eventPlanner.getEvents { (error) -> Void in
             self.reload()
+            guard error == nil else {
+                self.presentSimpleAlert("Refresh Error", message: error?.localizedDescription)
+                return
+            }
         }
     }
     
@@ -136,7 +144,7 @@ class EventsTableViewController: UITableViewController {
     }
     
     func didTapLogoutButton(sender: UIBarButtonItem) {
-        eventPlanner.logout(nil)
+        eventPlanner.logout()
         navigationController?.popToRootViewControllerAnimated(true)
     }
 
